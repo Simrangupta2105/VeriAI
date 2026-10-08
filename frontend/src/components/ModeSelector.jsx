@@ -41,34 +41,34 @@ export default function ModeSelector({ mode, setMode }) {
               onClick={() => setMode(m.id)}
               className={`cursor-pointer rounded-lg border p-3.5 transition-all select-none relative overflow-hidden ${
                 isActive
-                  ? 'bg-blue-50 border-blue-300 shadow-sm ring-1 ring-blue-200'
-                  : 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700 shadow-sm ring-1 ring-blue-200 dark:ring-blue-800'
+                  : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700'
               }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-2">
                   <div
                     className={`p-1.5 rounded-md ${
-                      isActive ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
+                      isActive ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-400'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
                   </div>
-                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-900' : 'text-gray-700'}`}>
+                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-900 dark:text-slate-100' : 'text-gray-700 dark:text-slate-300'}`}>
                     {m.title}
                   </span>
                 </div>
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
                     isActive
-                      ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                      : 'bg-gray-100 text-gray-600 border border-gray-200'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
+                      : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-600'
                   }`}
                 >
                   {m.badge}
                 </span>
               </div>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">{m.desc}</p>
+              <p className="text-xs text-gray-600 dark:text-slate-400 mt-2 leading-relaxed">{m.desc}</p>
             </div>
           );
         })}

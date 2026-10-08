@@ -85,26 +85,26 @@ export default function ProviderSelector({
               onClick={() => toggleProvider(p.id, p.mockId, p.hasKey)}
               className={`cursor-pointer rounded-lg border p-3 transition-all select-none flex flex-col justify-between ${
                 active
-                  ? 'bg-blue-50 border-blue-300 shadow-sm ring-1 ring-blue-200'
-                  : 'bg-white border-gray-200 opacity-60 hover:opacity-90'
+                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700 shadow-sm ring-1 ring-blue-200 dark:ring-blue-800'
+                  : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 opacity-60 hover:opacity-90'
               }`}
             >
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-sm font-semibold text-gray-900">{p.name}</span>
+                <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{p.name}</span>
                 {active ? (
-                  <CheckSquare className="w-4 h-4 text-blue-600 shrink-0" />
+                  <CheckSquare className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
                 ) : (
-                  <Square className="w-4 h-4 text-gray-400 shrink-0" />
+                  <Square className="w-4 h-4 text-gray-400 dark:text-slate-500 shrink-0" />
                 )}
               </div>
 
               <div className="flex items-center justify-between text-xs mt-1">
-                <span className="text-gray-600 font-mono text-[11px] truncate">{p.model}</span>
+                <span className="text-gray-600 dark:text-slate-400 font-mono text-[11px] truncate">{p.model}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
                     p.hasKey
-                      ? 'bg-green-50 text-green-600 border border-green-200'
-                      : 'bg-gray-100 text-gray-600 border border-gray-200'
+                      ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800'
+                      : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-700'
                   }`}
                 >
                   {p.hasKey ? 'BYOK Live' : 'Demo Sim'}

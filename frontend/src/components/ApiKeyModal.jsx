@@ -84,31 +84,31 @@ export default function ApiKeyModal({ isOpen, onClose, userKeys, onSaveKeys, onC
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
-      <div className="bg-white border border-gray-200 rounded-2xl max-w-xl w-full p-6 shadow-lg space-y-5 relative">
-        <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm">
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-lg space-y-5 relative">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 pb-3">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600">
+            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Key className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900">Bring Your Own Key (BYOK)</h2>
-              <p className="text-xs text-gray-600">Direct API connections with client-side isolation</p>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100">Bring Your Own Key (BYOK)</h2>
+              <p className="text-xs text-gray-600 dark:text-slate-400">Direct API connections with client-side isolation</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-600 hover:text-gray-900 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+            className="text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Security notice */}
-        <div className="p-3 rounded-lg bg-green-50 border border-green-200 flex items-start space-x-2.5 text-xs text-green-700">
-          <ShieldCheck className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 flex items-start space-x-2.5 text-xs text-green-700 dark:text-green-400">
+          <ShieldCheck className="w-4 h-4 text-green-600 dark:text-green-500 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <span className="font-semibold text-green-900">Security & Billing Protocol:</span>
+            <span className="font-semibold text-green-900 dark:text-green-300">Security & Billing Protocol:</span>
             <p>
               Keys are stored strictly in your local browser storage and dispatched only via secure headers to
               their respective endpoints. Raw keys are never stored on external databases or logged. Usage incurs standard API charges from your provider.
@@ -119,17 +119,17 @@ export default function ApiKeyModal({ isOpen, onClose, userKeys, onSaveKeys, onC
         {/* Inputs */}
         <div className="space-y-3.5 max-h-96 overflow-y-auto pr-1">
           {providerConfigs.map((p) => (
-            <div key={p.id} className="space-y-1.5 bg-gray-50 p-3 rounded-xl border border-gray-200">
+            <div key={p.id} className="space-y-1.5 bg-gray-50 dark:bg-slate-800 p-3 rounded-xl border border-gray-200 dark:border-slate-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-semibold text-gray-900">{p.name}</span>
-                  <span className="text-[10px] text-gray-600 font-mono">({p.note})</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{p.name}</span>
+                  <span className="text-[10px] text-gray-600 dark:text-slate-400 font-mono">({p.note})</span>
                 </div>
                 <a
                   href={p.docsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[11px] text-blue-600 hover:underline flex items-center space-x-1"
+                  className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline flex items-center space-x-1"
                 >
                   <span>Get Key</span>
                   <ExternalLink className="w-2.5 h-2.5" />
@@ -142,14 +142,14 @@ export default function ApiKeyModal({ isOpen, onClose, userKeys, onSaveKeys, onC
                   value={keys[p.id] || ''}
                   onChange={(e) => setKeys({ ...keys, [p.id]: e.target.value })}
                   placeholder={maskDisplay(keys[p.id]) || p.placeholder}
-                  className="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 font-mono"
+                  className="flex-1 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 font-mono"
                 />
 
                 <button
                   type="button"
                   onClick={() => handleTest(p.id)}
                   disabled={testing[p.id] || !keys[p.id]}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors shrink-0"
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors shrink-0"
                 >
                   {testing[p.id] ? (
                     <Loader2 className="w-3 h-3 animate-spin" />
@@ -162,7 +162,7 @@ export default function ApiKeyModal({ isOpen, onClose, userKeys, onSaveKeys, onC
               {testStatus[p.id] && (
                 <div
                   className={`text-[11px] flex items-center space-x-1 ${
-                    testStatus[p.id].success ? 'text-green-600' : 'text-red-600'
+                    testStatus[p.id].success ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                   }`}
                 >
                   {testStatus[p.id].success ? <Check className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
@@ -174,14 +174,14 @@ export default function ApiKeyModal({ isOpen, onClose, userKeys, onSaveKeys, onC
         </div>
 
         {/* Modal Actions */}
-        <div className="flex items-center justify-between border-t border-gray-200 pt-3">
+        <div className="flex items-center justify-between border-t border-gray-200 dark:border-slate-700 pt-3">
           <button
             type="button"
             onClick={() => {
               setKeys({ gemini: '', openai: '', anthropic: '', groq: '' });
               onClearKeys();
             }}
-            className="flex items-center space-x-1.5 text-xs text-red-600 hover:text-red-700 px-2 py-1"
+            className="flex items-center space-x-1.5 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 px-2 py-1"
           >
             <Trash2 className="w-3.5 h-3.5" />
             <span>Clear Stored Keys</span>
@@ -191,7 +191,7 @@ export default function ApiKeyModal({ isOpen, onClose, userKeys, onSaveKeys, onC
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700"
+              className="px-4 py-2 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300"
             >
               Cancel
             </button>

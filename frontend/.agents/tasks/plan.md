@@ -1,277 +1,136 @@
-# Implementation Plan: VeriAI Frontend Theme Redesign
-## Light Theme Overhaul (Styling Only)
+# VeriAI Frontend Redesign - Implementation Plan
 
-This plan outlines a complete visual redesign from dark slate-950 theme to a professional light theme inspired by TextSight AI. **No logic, backend changes, or functionality removal.** Only styling and layout.
-
----
+## Overview
+Redesign the VeriAI frontend to match the TextSight hallucination detector professional layout with day/night theme toggle support. The current app uses Tailwind v4 with @tailwindcss/vite plugin. Key changes: add theme state management, restructure layout with hero section, add theme toggle button, implement CSS variables for theme colors, and update components with dark mode support.
 
 ## Design Decisions
 
-1. **Color Palette**: Use light backgrounds (#f8f9fa, #ffffff, #f0f1f3), dark text (#1a1a1a, #374151), blue accent (#2563eb or #3b82f6). Status colors: green for verified, yellow for questionable, orange for unsupported, red for contradicted.
-   - *Rationale*: TextSight shows a minimal, airy interface with generous whitespace and professional typography. Light mode is more readable and modern for verification tools.
+### Theme Implementation Strategy
+- **State Management**: Theme state lives in App.jsx, passed down as props to components
+- **Storage**: Theme preference stored in localStorage under key 'veriai-theme' ('light' or 'dark')
+- **CSS Strategy**: Tailwind v4 class-based dark mode with `dark:` prefix classes; CSS variables in App.css for semantic color tokens
+- **Initial Theme**: Light theme by default; persists user preference on reload
+- **Transitions**: Smooth color transitions via `transition-colors` utility
 
-2. **Typography & Spacing**: Increase whitespace, make hierarchy clearer (larger headings, smaller secondary text), remove heavy shadows and gradients.
-   - *Rationale*: Professional SaaS design emphasizes clarity over decoration. Reduces cognitive load for fact-checking workflows.
+### Layout Restructuring
+- New hero section with FREE badge, compelling headline, and LLM compatibility line
+- Main tool card design matching TextSight: tool name + description header, usage counter, paste/clear buttons, large textarea, verify button, tips section
+- Responsive grid: main card on left/top, results panel on right/below (mobile)
+- Current research components (queries, results) repositioned into this new structure
 
-3. **Component Structure**: Preserve all existing markup; only update classNames. Add new elements only for new visual indicators (word count display, reliability badges) that were missing.
-   - *Rationale*: Minimizes risk of breaking functionality and keeps logic intact.
-
-4. **Status Indicators**: Replace dark color-coded badges with light backgrounds + borders + icons. Contradicted claims get a light red background, supported get light green, etc.
-   - *Rationale*: Matches TextSight's clear, scannable status system and maintains accessibility.
-
----
-
-## Implementation Order
-
-**Phase 1: Global Styles & Layout**
-- [ ] 1. Add light theme CSS custom properties and reset base styles in App.css
-      Files: `src/App.css`
-      Verify: `npm run dev` — check in browser at localhost that CSS loads without errors
-
-- [ ] 2. Update App.jsx root className: change from `bg-slate-950 text-slate-100` to light theme with `bg-white` / `bg-slate-50`, `text-slate-900` / `text-gray-700`
-      Files: `src/App.jsx`
-      Verify: `npm run dev` — page background is now light, text is dark
-
-**Phase 2: Navigation & Header**
-- [ ] 3. Redesign Navbar.jsx: light background (`bg-white`), light borders, blue accent for active tab, remove dark gradients
-      Files: `src/components/Navbar.jsx`
-      Verify: `npm run dev` — navbar is light, tabs use blue highlight instead of cyan
-
-**Phase 3: Input & Configuration Area**
-- [ ] 4. Redesign QuestionInput.jsx: light textarea with light borders, blue button instead of cyan-indigo gradient, add word count display (if not already present)
-      Files: `src/components/QuestionInput.jsx`
-      Verify: `npm run dev` — textarea and button match light theme, word count shows
-
-- [ ] 5. Redesign ProviderSelector.jsx: light cards with light borders, blue checkmark highlight, remove dark backgrounds
-      Files: `src/components/ProviderSelector.jsx`
-      Verify: `npm run dev` — provider cards are light and readable
-
-- [ ] 6. Redesign ModeSelector.jsx: light cards with light borders, blue highlight for active mode
-      Files: `src/components/ModeSelector.jsx`
-      Verify: `npm run dev` — mode selector matches light theme
-
-**Phase 4: Results Display**
-- [ ] 7. Redesign SynthesizedAnswerCard.jsx: light background, improve reliability/confidence badge display with status colors (green for HIGH, yellow for MEDIUM, red for LOW), add visual progress bar with light colors
-      Files: `src/components/SynthesizedAnswerCard.jsx`
-      Verify: `npm run dev` — answer card displays with clear status colors and readable text
-
-- [ ] 8. Redesign ClaimExplorer.jsx: light cards for each claim, status badges use green/yellow/orange/red backgrounds (light), expand/collapse still works
-      Files: `src/components/ClaimExplorer.jsx`
-      Verify: `npm run dev` — claims display with proper light status colors, click to expand/collapse works
-
-- [ ] 9. Redesign SourceList.jsx: light cards, light borders, clickable links styled in blue
-      Files: `src/components/SourceList.jsx`
-      Verify: `npm run dev` — sources display readably with light background
-
-- [ ] 10. Redesign ModelResponseCard.jsx: light background, light tabs for model selection, light text area for response
-      Files: `src/components/ModelResponseCard.jsx`
-      Verify: `npm run dev` — model responses are readable in light theme
-
-- [ ] 11. Redesign PipelineStepper.jsx: light background, light icons, horizontal pipeline display readable
-      Files: `src/components/PipelineStepper.jsx`
-      Verify: `npm run dev` — pipeline stages display clearly
-
-**Phase 5: Modals & Secondary Views**
-- [ ] 12. Redesign ApiKeyModal.jsx: light background, light inputs, light borders, blue buttons
-      Files: `src/components/ApiKeyModal.jsx`
-      Verify: `npm run dev` — open API key modal (click BYOK Keys button), verify light styling
-
-- [ ] 13. Redesign DocumentVerificationView.jsx: light cards, light upload area, light text inputs
-      Files: `src/components/DocumentVerificationView.jsx`
-      Verify: `npm run dev` — switch to Doc Grounding tab, verify light theme
-
-- [ ] 14. Redesign EvaluationView.jsx: light background, light metric cards, light table, readable text
-      Files: `src/components/EvaluationView.jsx`
-      Verify: `npm run dev` — switch to Academic Benchmark tab, verify light theme
-
-**Phase 6: Final Polish**
-- [ ] 15. Review footer styling, error messages, and all edge cases; ensure consistency across theme
-      Files: `src/App.jsx` (footer), all component error message backgrounds
-      Verify: `npm run dev` — trigger an error (invalid API key test) and verify error styling is light; footer is readable
-
-- [ ] 16. Full end-to-end verification: run `npm run dev`, test all tabs, all interactive elements, verify no console errors
-      Verify: `npm run dev` — open http://localhost:5173 (or specified port), navigate all tabs, test input, button clicks, modals, expand/collapse; confirm all text is readable and no UI is broken
+### Tailwind v4 Dark Mode Configuration
+- Tailwind v4 uses class-based dark mode by default (docs recommend `dark:` prefix approach)
+- index.css already has `@import "tailwindcss"`, no separate config file needed
+- Dark mode activated by adding `dark` class to html or body element
+- All dark-aware classes use `dark:` prefix throughout components
 
 ---
 
-## Color Mapping Reference
+# Implementation Plan
 
-This is the translation from old dark theme to new light theme:
+- [ ] 1. Create enhanced App.css with CSS variable system for both light and dark themes
+      Add :root variables for light theme and a .dark class override with dark theme variables.
+      Include semantic color tokens for backgrounds, text, borders, accents, verification states.
+      Add smooth `transition-colors` to relevant selectors for theme switching animation.
+      Files: src/App.css
+      Verify: No build errors when importing updated CSS.
 
-| Old (Dark) | New (Light) | Purpose |
-|-----------|-----------|---------|
-| `bg-slate-950`, `bg-slate-900` | `bg-white`, `bg-slate-50`, `bg-gray-50` | Main backgrounds |
-| `text-slate-100`, `text-white` | `text-slate-900`, `text-gray-800`, `text-gray-700` | Main text |
-| `border-slate-800`, `border-slate-700` | `border-gray-200`, `border-gray-300` | Borders |
-| `bg-cyan-500` (accent) | `bg-blue-500` (accent) | Primary buttons & highlights |
-| `bg-emerald-950`, `text-emerald-300` | `bg-green-50`, `text-green-700`, `border-green-200` | Supported/verified status |
-| `bg-rose-950`, `text-rose-300` | `bg-red-50`, `text-red-700`, `border-red-200` | Contradicted/error status |
-| `bg-amber-950`, `text-amber-300` | `bg-yellow-50`, `text-yellow-700`, `border-yellow-200` | Uncertain/warning status |
-| `bg-slate-800` (secondary) | `bg-gray-100` (secondary) | Secondary backgrounds, disabled states |
-| Remove: gradients, shadows | Add: subtle borders, clear spacing | Visual hierarchy |
+- [ ] 2. Update App.jsx to add theme state management and pass to Navbar
+      Add useState for theme (initialize from localStorage 'veriai-theme', default 'light').
+      Add useEffect to sync theme to localStorage on change.
+      Add toggleTheme handler function.
+      Pass theme and onToggleTheme props to Navbar component.
+      Apply `dark` class to root div when theme is 'dark'.
+      Files: src/App.jsx
+      Verify: Console shows no prop warning; theme state initializes correctly; localStorage updates on toggle.
 
----
+- [ ] 3. Update Navbar.jsx to accept and display theme toggle button
+      Accept 'theme' and 'onToggleTheme' props from App.
+      Add Sun and Moon icon imports from lucide-react.
+      Add theme toggle button in top-right of navbar (before or after BYOK Keys button).
+      Button shows Sun icon when in light mode, Moon icon when in dark mode.
+      Apply dark-mode-aware classes to navbar elements (dark: prefix for dark theme colors).
+      Files: src/components/Navbar.jsx
+      Verify: Theme toggle button renders; clicking toggles between Sun/Moon icons; no console errors.
 
-## Specific Styling Changes by Component
+- [ ] 4. Update index.css to support both light and dark theme base styles
+      Modify @layer base body styles to use CSS variables instead of hardcoded dark values.
+      Keep existing scrollbar styles but apply dark-mode-aware scrollbar colors.
+      Ensure smooth transitions on color changes.
+      Files: src/index.css
+      Verify: Page renders correctly in both light and dark modes; scrollbar visible and styled appropriately.
 
-### Navbar.jsx
-- Change `bg-slate-950/80` → `bg-white`
-- Change `border-slate-800` → `border-gray-200`
-- Change active tab from `bg-slate-800 text-cyan-400 border-slate-700` → `bg-blue-50 text-blue-600 border-blue-300`
-- Logo gradient stays (or becomes blue theme)
-- Inactive tabs: `text-slate-400 hover:text-slate-200` → `text-gray-500 hover:text-gray-700`
+- [ ] 5. Update QuestionInput.jsx component with dark mode support
+      Replace hardcoded gray/blue color classes with dark: prefixed equivalents.
+      Examples: 'bg-white dark:bg-slate-900', 'text-gray-400 dark:text-slate-400', 'border-gray-200 dark:border-slate-700'.
+      Ensure input textarea, buttons, and text all have dark mode variants.
+      Files: src/components/QuestionInput.jsx
+      Verify: Run dev server, toggle theme, verify all input elements render correctly in both modes.
 
-### QuestionInput.jsx
-- Textarea: `bg-slate-900/70 border-slate-700/80` → `bg-white border-gray-300`
-- Textarea placeholder: `placeholder-slate-500` → `placeholder-gray-400`
-- Textarea text: `text-slate-100` → `text-slate-900`
-- Button: `from-cyan-500 to-indigo-600` → `bg-blue-600 hover:bg-blue-700`
-- Sample queries: `bg-slate-900 hover:bg-slate-800` → `bg-gray-100 hover:bg-gray-200`
+- [ ] 6. Update SynthesizedAnswerCard.jsx component with dark mode support
+      Add dark: prefix classes to all background colors, text colors, borders, and accent colors.
+      Examples: 'bg-white dark:bg-slate-900', 'text-gray-900 dark:text-white', 'border-gray-200 dark:border-slate-700'.
+      Ensure confidence badges, progress bars, and icon backgrounds have dark variants.
+      Files: src/components/SynthesizedAnswerCard.jsx
+      Verify: Run dev server, toggle theme, verify card and all sub-elements render correctly in both modes.
 
-### ProviderSelector.jsx
-- Cards: `bg-slate-950/60 border-slate-800/80` → `bg-white border-gray-200`
-- Active card: `bg-slate-900/90 border-slate-600 ring-cyan-500/30` → `bg-blue-50 border-blue-400 ring-blue-300`
-- Checkmark: keep but make blue instead of cyan
-- "Demo Sim" badge: `bg-slate-800 text-slate-400` → `bg-gray-100 text-gray-600`
-- "BYOK Live" badge: keep green
+- [ ] 7. Update ClaimExplorer.jsx component with dark mode support
+      Add dark: prefix classes to claim cards, filter buttons, badges, and text elements.
+      Ensure expanded claim detail sections have dark background and text contrast.
+      Dark mode colors: bg-slate-900/50 for card backgrounds, text-slate-100 for text, border-slate-700 for borders.
+      Files: src/components/ClaimExplorer.jsx
+      Verify: Run dev server, toggle theme, verify all claim cards and filters render correctly in both modes.
 
-### ModeSelector.jsx
-- Cards: `bg-slate-950/60 border-slate-800` → `bg-white border-gray-200`
-- Active card: `bg-slate-900 border-cyan-500/80` → `bg-blue-50 border-blue-400`
-- Icon background: `bg-cyan-500/20 text-cyan-400` → `bg-blue-100 text-blue-600`
+- [ ] 8. Update remaining component files with dark mode support
+      Apply dark: prefix pattern to all remaining components: ProviderSelector, ModeSelector, ModelResponseCard, 
+      SourceList, PipelineStepper, ApiKeyModal, DocumentVerificationView, EvaluationView.
+      Ensure consistent color palette: light backgrounds (white/gray-50), dark backgrounds (slate-900/slate-950).
+      Verify text contrast meets accessibility standards in both modes.
+      Files: src/components/ProviderSelector.jsx, src/components/ModeSelector.jsx, src/components/ModelResponseCard.jsx,
+             src/components/SourceList.jsx, src/components/PipelineStepper.jsx, src/components/ApiKeyModal.jsx,
+             src/components/DocumentVerificationView.jsx, src/components/EvaluationView.jsx
+      Verify: Run `npm run dev`, toggle theme through all tabs, verify all components render correctly in both light and dark modes.
 
-### SynthesizedAnswerCard.jsx
-- Main container: `from-slate-900 via-slate-900/95 to-slate-950` → `bg-white`
-- Border: `border-slate-700/80` → `border-gray-200`
-- Header: `border-slate-800` → `border-gray-200`
-- Confidence badge colors:
-  - HIGH: `bg-emerald-950/80 text-emerald-300` → `bg-green-50 text-green-700 border-green-200`
-  - MEDIUM: `bg-cyan-950/80 text-cyan-300` → `bg-blue-50 text-blue-700 border-blue-200`
-  - LOW: `bg-rose-950/80 text-rose-300` → `bg-red-50 text-red-700 border-red-200`
-- Progress bar background: `bg-slate-800` → `bg-gray-200`
-- Support ratio bar: keep green
-- Contradiction bar: keep red
-- Uncertain bar: keep orange
-
-### ClaimExplorer.jsx
-- Container: `border-slate-800 bg-slate-900/50` → `border-gray-200 bg-white`
-- Claim card (default): `border-slate-800/90 bg-slate-950/50` → `border-gray-200 bg-gray-50`
-- Claim card (contradicted): `border-rose-900/60 bg-rose-950/10` → `border-red-200 bg-red-50`
-- Status badges:
-  - SUPPORTED: `bg-emerald-950/80 text-emerald-300` → `bg-green-50 text-green-700 border-green-200`
-  - CONTRADICTED: `bg-rose-950/80 text-rose-300` → `bg-red-50 text-red-700 border-red-200`
-  - UNCERTAIN: `bg-amber-950/80 text-amber-300` → `bg-yellow-50 text-yellow-700 border-yellow-200`
-- Expanded detail: `bg-slate-900/40 border-slate-800/80` → `bg-gray-100 border-gray-200`
-
-### SourceList.jsx
-- Container: `border-slate-800 bg-slate-900/50` → `border-gray-200 bg-white`
-- Source cards: `border-slate-800 bg-slate-950/60` → `border-gray-200 bg-gray-50`
-- Authority score badge: keep blue/cyan styling (becomes `bg-blue-50 text-blue-600`)
-
-### ModelResponseCard.jsx
-- Container: `border-slate-800 bg-slate-900/50` → `border-gray-200 bg-white`
-- Header: `bg-slate-900/80 border-slate-800` → `bg-gray-100 border-gray-200`
-- Tab buttons (active): `bg-cyan-500/20 text-cyan-300 border-cyan-500/50` → `bg-blue-100 text-blue-600 border-blue-300`
-- Response text: `text-slate-300` → `text-slate-900`
-
-### ApiKeyModal.jsx
-- Background: `bg-slate-900 border-slate-800` → `bg-white border-gray-200`
-- Input: `bg-slate-900 border-slate-700/80` → `bg-white border-gray-300`
-- Input focus: `focus-border-cyan-500` → `focus-border-blue-500`
-- Provider card: `bg-slate-950/60 p-3 rounded-xl border-slate-800` → `bg-gray-50 p-3 rounded-xl border-gray-200`
-- Buttons: cyan/blue updates
-
-### DocumentVerificationView.jsx
-- Container: `border-slate-800 bg-slate-900/60` → `border-gray-200 bg-white`
-- Dropzone: `border-slate-700/80 hover-border-cyan-500/60 bg-slate-950/40` → `border-gray-300 hover-border-blue-400 bg-white`
-- Input: `bg-slate-950 border-slate-700` → `bg-white border-gray-300`
-- Result container: `border-slate-800 bg-slate-900/50` → `border-gray-200 bg-white`
-
-### EvaluationView.jsx
-- Header card: `from-slate-900 to-slate-950` → `bg-white`
-- Metric cards: `border-slate-800 bg-slate-900/60` → `border-gray-200 bg-gray-50`
-- Table: `divide-slate-800/60` → `divide-gray-200`
-- Table header: `border-slate-800 text-slate-400` → `border-gray-300 text-gray-600`
-- Comparison table row (VeriAI): `bg-cyan-950/20` → `bg-blue-50`
-
-### PipelineStepper.jsx
-- Container: `border-slate-800 bg-slate-900/40` → `border-gray-200 bg-gray-50`
-- Stage boxes: `bg-slate-900/80 border-slate-800` → `bg-white border-gray-200`
-- Duration badge: `bg-cyan-950/60 border-cyan-800/50` → `bg-blue-50 text-blue-600 border-blue-200`
-
-### App.jsx (main container and footer)
-- Main: `bg-slate-950 text-slate-100` → `bg-white text-slate-900`
-- Mission banner: `from-slate-900/90 via-slate-900/50 to-slate-950 border-slate-800/80` → `from-white via-gray-50 to-white border-gray-200`
-- Mission banner text: `text-white` → `text-slate-900`, `text-slate-400` → `text-gray-600`
-- Interactive config section: `border-slate-800 bg-slate-900/40` → `border-gray-200 bg-gray-50`
-- Error banner: `bg-rose-950/40 border-rose-800/80` → `bg-red-50 border-red-200 text-red-700`
-- Export/Reset buttons: update to light styling
-- Footer: `border-slate-900 bg-slate-950/60 text-slate-500` → `border-gray-200 bg-gray-50 text-gray-600`
+- [ ] 9. Test full theme toggle workflow end-to-end
+      Start dev server with `npm run dev`.
+      Navigate to frontend on http://localhost:5173.
+      Click theme toggle button (Sun/Moon icon in top-right).
+      Verify all page elements transition smoothly to dark mode.
+      Verify localStorage persists theme selection (check DevTools > Application > localStorage, key 'veriai-theme').
+      Refresh page and verify theme is maintained.
+      Toggle back to light mode and verify all transitions and persistence work.
+      Files: (no file changes)
+      Verify: Visual inspection confirms smooth theme transitions, all UI elements render correctly in both modes,
+              localStorage key 'veriai-theme' contains correct value, theme persists across page reloads.
 
 ---
 
-## Additional Markup Updates
+## Notes on Architecture
 
-1. **Word Count Display** (QuestionInput.jsx): If not present, add a word/character counter display near the textarea submit button area in light gray text.
+### CSS Variable Naming Convention
+Variables use semantic naming: `--bg-primary`, `--text-primary`, `--accent`, etc., not raw color names. This allows the App.css .dark class to override all variables at once without touching individual components.
 
-2. **Reliability Score Badge** (SynthesizedAnswerCard.jsx): Ensure the confidence badge prominently shows HIGH/MEDIUM/LOW with clear color coding.
+### Component Pattern
+All components use standard Tailwind dark: prefix pattern:
+```jsx
+className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white border-gray-200 dark:border-slate-700"
+```
 
-3. **Claim Status Indicators** (ClaimExplorer.jsx): Each claim should have a clear colored badge (green/yellow/orange/red) matching its verification_status.
+### Verification Colors (Must Support Dark Mode)
+- Verified/Supported: green (light: green-50/green-700, dark: emerald-900/emerald-300)
+- Contradicted/Fabricated: red (light: red-50/red-700, dark: rose-900/rose-300)
+- Uncertain/Questionable: yellow/amber (light: yellow-50/yellow-700, dark: amber-900/amber-300)
+- Badge colors use semantic pairs to maintain visibility in both modes
 
-4. **Source Authority Badges** (SourceList.jsx & ClaimExplorer.jsx): Authority scores should display in blue badges.
+### localStorage Implementation
+- Key: 'veriai-theme'
+- Values: 'light' or 'dark'
+- Retrieved on App mount, used to set initial theme state
+- Updated whenever toggleTheme is called
 
----
+### Tailwind v4 & Dark Mode
+- No separate tailwind.config.js needed; v4 uses class-based dark mode out of the box
+- The `@tailwindcss/vite` plugin handles compilation
+- `dark:` prefix activates when `dark` class exists on ancestor (applied to root div in App.jsx)
+- All color utilities automatically have `dark:` variants available
 
-## Verification Checklist
-
-After completing all edits:
-
-1. Run `npm run dev` and verify:
-   - Page loads without console errors
-   - All text is readable (dark text on light backgrounds)
-   - All interactive elements (buttons, tabs, expand/collapse) work
-   - Colors match the mapping above
-
-2. Test each tab:
-   - Research Studio: submit query, view results, all sections visible
-   - Doc Grounding: upload interface visible, file picker works
-   - Academic Benchmark: table and metric cards display
-
-3. Test interactivity:
-   - Click provider checkboxes — should toggle
-   - Click mode selector — should highlight active mode
-   - Click claim cards to expand/collapse — should work
-   - Click model response tabs — should switch views
-   - Click "BYOK Keys" button — modal opens with light styling
-   - Click export button — should not break
-
-4. Visual polish:
-   - No orphaned dark colors
-   - Consistent spacing and alignment
-   - Blue accent used consistently for highlights
-   - Status colors (green/yellow/red) applied consistently
-
----
-
-## Notes
-
-- **No component restructuring**: All existing JSX structure remains; only className updates.
-- **No logic changes**: Business logic, state management, API calls untouched.
-- **Gradients removal**: Dark gradient backgrounds replaced with flat light colors or subtle borders.
-- **Icon colors**: Lucide icons automatically inherit color from parent text/container classes.
-- **Hover states**: Update from dark theme hover (lighter dark) to light theme hover (darker light).
-- **Selection**: Keep `selection:bg-blue-500 selection:text-white` in App.jsx root.
-- **Tailwind classes only**: No new CSS files or custom styles; work entirely within Tailwind utility classes.
-
----
-
-## Build & Test Commands
-
-- **Start dev server**: `npm run dev`
-- **Build for production**: `npm run build`
-- **Lint**: `npm run lint`
-- **Preview built output**: `npm run preview`
-
----
-
-End of Plan

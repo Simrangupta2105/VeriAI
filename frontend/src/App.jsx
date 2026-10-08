@@ -18,12 +18,13 @@ import {
   saveStoredApiKeys,
   clearStoredApiKeys,
 } from './services/api';
-import { AlertCircle, Download, RotateCcw } from 'lucide-react';
+import { AlertCircle, Download, RotateCcw, Sun, Moon } from 'lucide-react';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('research');
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
   const [userKeys, setUserKeys] = useState({});
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('veriai-theme') === 'dark');
 
   // Research State
   const [question, setQuestion] = useState(
@@ -34,6 +35,16 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [researchData, setResearchData] = useState(null);
   const [error, setError] = useState(null);
+
+  // Apply dark mode class to document root
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('veriai-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   // Load keys from localStorage on mount
   useEffect(() => {
@@ -116,13 +127,15 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col font-sans selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 flex flex-col font-sans selection:bg-blue-500 selection:text-white transition-colors">
       {/* Top Navigation */}
       <Navbar
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         onOpenApiKeyModal={() => setIsKeyModalOpen(true)}
         hasKeys={hasAnyKey}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark(prev => !prev)}
       />
 
       {/* Main Container */}
@@ -130,15 +143,15 @@ export default function App() {
         {currentTab === 'research' && (
           <div className="space-y-6">
             {/* Mission / Context banner */}
-            <div className="rounded-2xl border border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="rounded-2xl border border-gray-200 dark:border-slate-700 bg-gradient-to-r from-white dark:from-slate-900 via-gray-50 dark:via-slate-800 to-white dark:to-slate-900 p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center space-x-2 mb-2">
-                  <span className="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 font-semibold border border-blue-200">Demo Mode</span>
+                  <span className="text-xs px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-700">Demo Mode</span>
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
                   Multi-LLM Hallucination Verification Platform
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-600 max-w-2xl leading-relaxed">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 max-w-2xl leading-relaxed">
                   VeriAI cross-references claims across parallel LLMs, isolates disagreements, and evaluates
                   propositions against authoritative external records rather than trusting an unverified LLM judge.
                 </p>
@@ -148,9 +161,9 @@ export default function App() {
                 <div className="flex items-center space-x-2 shrink-0">
                   <button
                     onClick={handleExportReport}
-                    className="px-3.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-xs font-medium text-gray-700 flex items-center space-x-1.5 transition-colors shadow-sm"
+                    className="px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-xs font-medium text-gray-700 dark:text-slate-200 flex items-center space-x-1.5 transition-colors shadow-sm"
                   >
-                    <Download className="w-3.5 h-3.5 text-blue-600" />
+                    <Download className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Export JSON Report</span>
                   </button>
                   <button
@@ -158,7 +171,7 @@ export default function App() {
                       setResearchData(null);
                       setQuestion('');
                     }}
-                    className="p-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-colors"
+                    className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 transition-colors"
                     title="Reset view"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -168,7 +181,7 @@ export default function App() {
             </div>
 
             {/* Interactive Query Input & Configuration */}
-            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 sm:p-6 space-y-5 shadow-sm">
+            <div className="rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50 p-5 sm:p-6 space-y-5 shadow-sm">
               <QuestionInput
                 question={question}
                 setQuestion={setQuestion}
@@ -177,7 +190,7 @@ export default function App() {
                 mode={mode}
               />
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-2 border-t border-gray-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-2 border-t border-gray-200 dark:border-slate-600">
                 <ProviderSelector
                   selectedProviders={selectedProviders}
                   setSelectedProviders={setSelectedProviders}
@@ -190,11 +203,11 @@ export default function App() {
 
             {/* Error Message */}
             {error && (
-              <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start space-x-3 shadow-sm">
-                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-600" />
+              <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm flex items-start space-x-3 shadow-sm">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-600 dark:text-red-500" />
                 <div className="space-y-1">
                   <span className="font-semibold block">Execution Notice</span>
-                  <p className="text-red-600">{error}</p>
+                  <p className="text-red-600 dark:text-red-400">{error}</p>
                 </div>
               </div>
             )}
@@ -253,7 +266,7 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-gray-50 py-6 text-center text-xs text-gray-600 font-mono">
+      <footer className="border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 py-6 text-center text-xs text-gray-600 dark:text-slate-400 font-mono">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>VeriAI Academic Platform · Multi-LLM Fact Verification</span>
           <span>Designed for empirical hallucination mitigation & evidence grounding</span>
