@@ -1,0 +1,13 @@
+{
+  "name": "hallucination-detector",
+  "version": "1.0.0",
+  "description": "AI Hallucination Detection & Verification System",
+  "scripts": {
+    "dev": ".venv\\Scripts\\python.exe run.py",
+    "start": ".venv\\Scripts\\python.exe run.py",
+    "test": ".venv\\Scripts\\python.exe run.py --test",
+    "benchmark": ".venv\\Scripts\\python.exe run.py --benchmark"
+  },
+  "author": "",
+  "license": "MIT"
+}

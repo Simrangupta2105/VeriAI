@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Hallucination Detection & Verification System - Technical Architecture & Configuration Reference</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 14mm 14mm 14mm 14mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    line-height: 1.45;
+    font-size: 9.5pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header {
+    border-bottom: 2.5px solid #2563eb;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+
+  .header h1 {
+    font-size: 18pt;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+
+  .header .subtitle {
+    font-size: 10.5pt;
+    color: #475569;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .meta-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 8pt;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 6px;
+  }
+
+  h2 {
+    font-size: 12.5pt;
+    color: #0f172a;
+    border-left: 4px solid #2563eb;
+    padding-left: 8px;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 10.5pt;
+    color: #1e293b;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+
+  p {
+    margin: 0 0 8px 0;
+  }
+
+  .lead {
+    font-size: 9.8pt;
+    color: #334155;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 10px 0;
+    font-size: 8pt;
+    page-break-inside: auto;
+  }
+
+  th, td {
+    padding: 4px 7px;
+    text-align: left;
+    border: 1px solid #cbd5e1;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 8pt;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 7pt;
+    font-weight: 600;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-purple { background: #f3e8ff; color: #6b21a8; }
+  .badge-slate { background: #f1f5f9; color: #334155; }
+
+  .callout {
+    background-color: #f8fafc;
+    border-left: 3.5px solid #2563eb;
+    padding: 8px 12px;
+    margin: 10px 0;
+    border-radius: 0 4px 4px 0;
+    page-break-inside: avoid;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 9pt;
+    color: #1e3a8a;
+    margin-bottom: 2px;
+  }
+
+  .callout p {
+    margin: 0;
+    font-size: 8.5pt;
+    color: #334155;
+  }
+
+  code {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-size: 8pt;
+    background-color: #f1f5f9;
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+  }
+
+  pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 10px 12px;
+    border-radius: 5px;
+    font-size: 7.5pt;
+    line-height: 1.4;
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    overflow-x: auto;
+    margin: 8px 0 12px 0;
+    page-break-inside: avoid;
+  }
+
+  .grid-2 {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0;
+    page-break-inside: avoid;
+  }
+
+  .card {
+    flex: 1;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 10px;
+    background: #ffffff;
+  }
+
+  .card h4 {
+    margin: 0 0 6px 0;
+    font-size: 9pt;
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  ul, ol {
+    margin: 0 0 8px 0;
+    padding-left: 18px;
+  }
+
+  li {
+    margin-bottom: 3px;
+  }
+
+  .footer-note {
+    font-size: 7.5pt;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 14px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: TITLE & EXECUTIVE SUMMARY & ARCHITECTURE -->
+<div class="header">
+  <h1>AI Hallucination Detection & Verification System</h1>
+  <div class="subtitle">Complete Technical Stack, Configuration Specification & System Architecture Guide</div>
+  <div class="meta-grid">
+    <span><strong>Author / System:</strong> Anti-Hallucination Engineering Platform</span>
+    <span><strong>Frameworks:</strong> FastAPI, Python 3.11+, Pydantic v2, SQLite</span>
+    <span><strong>Status:</strong> Production Ready (Local & Cloud)</span>
+  </div>
+</div>
+
+<p class="lead">
+  This document serves as the official technical manual for the <strong>AI Hallucination Detection and Verification System</strong>. Rather than relying on superficial keyword matching or vulnerable single-prompt self-consistency loops, the platform breaks AI responses into atomic, typed propositions, conducts independent evidence retrieval, scores domain credibility, detects fine-grained contradictions (temporal, numerical, entity), subjects verdicts to an adversarial critic, and computes deterministic reliability metrics.
+</p>
+
+<h2>1. System Architecture & Multi-Agent Hierarchy</h2>
+<p>The verification pipeline executes asynchronously across 6 specialized agents:</p>
+
+<pre>
+USER INPUT (Question or Pasted Answer)
+   │
+   ▼
+AGENT 1: ANSWER GENERATOR (LLM Generation or Passthrough User Text)
+   │
+   ▼
+AGENT 2: ATOMIC CLAIM EXTRACTOR (Syntactic & Semantic Decomposition into 12+ Typed Claims)
+   │
+   ▼
+CLAIM NORMALIZER & QUERY PLANNER (Targeted Search Queries & Entity Anchoring)
+   │
+   ▼
+AGENT 3: EVIDENCE RETRIEVER (Wikipedia REST API + DuckDuckGo Web Search + HTML Chunk Scraper)
+   │
+   ▼
+SOURCE QUALITY EVALUATOR (Explainable 0–100 Rubric: Provenance, Recency, Semantic Alignment)
+   │
+   ▼
+AGENT 4: ZERO-TRUST VERIFIER (Temporal, Numerical & Inter-Source NLI Verification)
+   │
+   ▼
+AGENT 5: ADVERSARIAL CRITIC (Catches Confirmation Bias, Weak Provenance & Uncited Claims)
+   │
+   ▼
+AGENT 6: HALLUCINATION SCORING ENGINE (Harmonic Reliability 0–100 & Hallucination Risk %)
+   │
+   ▼
+SQLITE AUDIT PERSISTENCE & INTERACTIVE REAL-TIME DASHBOARD UI
+</pre>
+
+<div class="callout">
+  <div class="callout-title">Zero-Trust Verification Principle</div>
+  <p>
+    An absence of evidence strictly yields <code>UNVERIFIED</code>—it is never guessed as false or assumed true. Claims are grounded exclusively in retrieved evidence tokens with verifiable citations.
+  </p>
+</div>
+
+<!-- PAGE 2: TECH STACK -->
+<div class="page-break"></div>
+
+<h2>2. Comprehensive Technology Stack</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 20%;">Layer / Subsystem</th>
+      <th style="width: 25%;">Technology & Version</th>
+      <th style="width: 55%;">Role & Technical Responsibility</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Core Backend</strong></td>
+      <td>
+        <code>FastAPI</code> (v0.143.0)<br>
+        <code>Uvicorn</code> (v0.54.0)<br>
+        <code>Starlette</code> (v1.7.0)
+      </td>
+      <td>High-concurrency ASGI REST API framework with asynchronous request handlers, CORS middleware, lifespan startup events, and interactive Swagger documentation at <code>/docs</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Data Modeling & Validation</strong></td>
+      <td>
+        <code>Pydantic v2</code> (v2.14.1)<br>
+        <code>pydantic-settings</code> (v2.15.0)<br>
+        <code>pydantic-core</code> (v2.50.1)
+      </td>
+      <td>Strict type validation, structured domain models (<code>Claim</code>, <code>EvidenceItem</code>, <code>VerificationResult</code>, <code>VerificationReport</code>), and environment parsing with fallbacks.</td>
+    </tr>
+    <tr>
+      <td><strong>HTTP & Web Scraping</strong></td>
+      <td>
+        <code>httpx</code> (v0.28.1)<br>
+        <code>BeautifulSoup4</code> (v4.15.0)<br>
+        <code>duckduckgo-search</code> (v8.1.1)<br>
+        <code>primp</code> (v2.0.1) / <code>lxml</code> (v6.1.3)
+      </td>
+      <td>Async HTTP client with custom timeouts and redirect tracing; DuckDuckGo text search; Wikipedia Action API querying; HTML tag stripping and paragraph-level chunk extraction via <code>PageScraper</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Database & Audit Store</strong></td>
+      <td>
+        <code>SQLite 3</code> (Native)<br>
+        Python <code>sqlite3</code><br>
+        <code>contextlib</code> Connection Pooling
+      </td>
+      <td>Embedded relational audit repository. Manages normalized schemas across <code>reports</code>, <code>claims</code>, and <code>evidence</code> tables with Foreign Keys and <code>ON DELETE CASCADE</code> constraints.</td>
+    </tr>
+    <tr>
+      <td><strong>AI & Verification Engine</strong></td>
+      <td>
+        Dual-Layer Hybrid:<br>
+        1. Rule-based NLI heuristics<br>
+        2. Live LLM API integration
+      </td>
+      <td>Deterministic offline heuristics for dates, numbers, and relationships; optional live frontier model calls via <code>google-genai</code> (Gemini 2.5 Flash), OpenAI (GPT-4o-mini), or Groq.</td>
+    </tr>
+    <tr>
+      <td><strong>Testing & Benchmark Harness</strong></td>
+      <td>
+        <code>pytest</code> (v9.1.1)<br>
+        <code>pytest-asyncio</code> (v1.4.0)<br>
+        Custom Adversarial Harness
+      </td>
+      <td>Automated test suite across agents, retrieval modules, scoring formulas, and 10 adversarial benchmarks measuring Precision, Recall, and F1.</td>
+    </tr>
+    <tr>
+      <td><strong>Frontend User Interface</strong></td>
+      <td>
+        Semantic <code>HTML5</code><br>
+        Modern <code>Vanilla CSS3</code><br>
+        <code>Vanilla JavaScript (ES6+)</code>
+      </td>
+      <td>Zero-dependency, high-contrast dashboard with live pipeline progress stepper, color-coded verdict badges, evidence preview drawer, and JSON/text export facilities.</td>
+    </tr>
+    <tr>
+      <td><strong>Process & Dev Tooling</strong></td>
+      <td>
+        Python <code>venv</code><br>
+        <code>package.json</code> (NPM proxy)<br>
+        <code>start_app.bat</code> (Windows Launcher)
+      </td>
+      <td>Cross-tool developer workflow: standard CLI (<code>python run.py</code>), Windows batch script, and NPM scripts (<code>npm run dev</code>, <code>npm test</code>, <code>npm run benchmark</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>2.1 Frontend UI Features & Design Tokens</h3>
+<ul>
+  <li><strong>Glassmorphism & Color Variables:</strong> Modern CSS tokens for dark/light themes, subtle gradients, and card shadows.</li>
+  <li><strong>Responsive Stepper:</strong> Real-time visual progress indicator tracking <em>Generation → Extraction → Normalization → Retrieval → Verification → Audit Critic → Scoring</em>.</li>
+  <li><strong>Verdict Badges:</strong> High-contrast badges for <span class="badge badge-green">SUPPORTED</span>, <span class="badge badge-amber">PARTIALLY_SUPPORTED</span>, <span class="badge badge-red">CONTRADICTED</span>, <span class="badge badge-slate">UNVERIFIED</span>, and <span class="badge badge-purple">NOT_FACTUAL</span>.</li>
+  <li><strong>Audit Export:</strong> Interactive copy and download buttons for raw JSON reports and formatted plain-text forensic logs.</li>
+</ul>
+
+<!-- PAGE 3: CONFIGURATIONS -->
+<div class="page-break"></div>
+
+<h2>3. System Configurations Reference</h2>
+
+<p>
+  Configurations are loaded dynamically from environment variables and an optional <code>.env</code> file via <code>backend/app/config.py</code>.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 28%;">Variable Name</th>
+      <th style="width: 14%;">Default Value</th>
+      <th style="width: 12%;">Type</th>
+      <th style="width: 46%;">Description & Impact</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>HOST</code></td>
+      <td><code>0.0.0.0</code></td>
+      <td>String</td>
+      <td>Network interface IP binding for the Uvicorn web server. Set to <code>127.0.0.1</code> for local-only access.</td>
+    </tr>
+    <tr>
+      <td><code>PORT</code></td>
+      <td><code>8000</code></td>
+      <td>Integer</td>
+      <td>TCP port on which the FastAPI application listens for incoming HTTP requests.</td>
+    </tr>
+    <tr>
+      <td><code>DEBUG</code></td>
+      <td><code>true</code></td>
+      <td>Boolean</td>
+      <td>Enables development mode, hot-reloading (<code>StatReload</code>), and verbose logging output.</td>
+    </tr>
+    <tr>
+      <td><code>DATABASE_PATH</code></td>
+      <td><code>./hallucination_verification.db</code></td>
+      <td>Path</td>
+      <td>Filesystem location of the SQLite audit database file.</td>
+    </tr>
+    <tr>
+      <td><code>DATABASE_URL</code></td>
+      <td><code>sqlite:///./hallucination_verification.db</code></td>
+      <td>String</td>
+      <td>Connection string URI formatted for SQLite database connectivity.</td>
+    </tr>
+    <tr>
+      <td><code>DEFAULT_MODEL</code></td>
+      <td><code>hybrid-verifier-v1</code></td>
+      <td>String</td>
+      <td>Model tag used when generating answers. Options: <code>hybrid-verifier-v1</code>, <code>gemini-2.5-flash</code>, <code>gpt-4o-mini</code>.</td>
+    </tr>
+    <tr>
+      <td><code>MAX_SEARCH_RESULTS</code></td>
+      <td><code>5</code></td>
+      <td>Integer</td>
+      <td>Maximum number of evidence snippets retrieved per search query from DuckDuckGo and Wikipedia.</td>
+    </tr>
+    <tr>
+      <td><code>REQUEST_TIMEOUT_SECONDS</code></td>
+      <td><code>15</code></td>
+      <td>Integer</td>
+      <td>Global HTTP request timeout in seconds applied to external search APIs and web scraping requests.</td>
+    </tr>
+    <tr>
+      <td><code>ENABLE_CRITIC_PASS</code></td>
+      <td><code>true</code></td>
+      <td>Boolean</td>
+      <td>Enables Agent 5 (Adversarial Critic) to audit and overturn lax verdicts before calculating reliability scores.</td>
+    </tr>
+    <tr>
+      <td><code>EVIDENCE_CONFIDENCE_THRESHOLD</code></td>
+      <td><code>0.65</code></td>
+      <td>Float</td>
+      <td>Minimum semantic alignment score required before external evidence is admitted for claim verification.</td>
+    </tr>
+    <tr>
+      <td><code>GEMINI_API_KEY</code> / <code>GOOGLE_API_KEY</code></td>
+      <td><em>(empty)</em></td>
+      <td>String</td>
+      <td>Optional Google AI Studio API key for enabling live Gemini LLM answer generation and semantic NLI verification.</td>
+    </tr>
+    <tr>
+      <td><code>OPENAI_API_KEY</code></td>
+      <td><em>(empty)</em></td>
+      <td>String</td>
+      <td>Optional OpenAI API key for GPT-4o-mini fallback verification.</td>
+    </tr>
+    <tr>
+      <td><code>GROQ_API_KEY</code></td>
+      <td><em>(empty)</em></td>
+      <td>String</td>
+      <td>Optional Groq API key for low-latency Llama-3 inference.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <div class="callout-title">Offline & Zero-Cost Operation</div>
+  <p>
+    When all LLM API keys are unset, the system functions seamlessly in <strong>hybrid heuristic mode</strong>. It utilizes the Wikipedia REST API and DuckDuckGo search without incurring any third-party API fees.
+  </p>
+</div>
+
+<!-- PAGE 4: SCORING & RUBRIC & DATABASE SCHEMA -->
+<div class="page-break"></div>
+
+<h2>4. Scoring Formulas, Rubric & Database Schema</h2>
+
+<h3>4.1 Source Quality Scoring Rubric (0–100)</h3>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 30%;">Source Category</th>
+      <th style="width: 15%;">Base Score</th>
+      <th style="width: 55%;">Domain Patterns & Qualification Criteria</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Government & Official</strong></td>
+      <td><span class="badge badge-green">92.0</span></td>
+      <td><code>.gov</code>, <code>.mil</code>, <code>.gov.uk</code>, <code>.europa.eu</code>, <code>who.int</code>, <code>nasa.gov</code>. Primary official provenance.</td>
+    </tr>
+    <tr>
+      <td><strong>Academic & Peer-Reviewed</strong></td>
+      <td><span class="badge badge-green">88.0</span></td>
+      <td><code>.edu</code>, <code>arxiv.org</code>, <code>nature.com</code>, <code>science.org</code>, <code>ncbi.nlm.nih.gov</code>, <code>ieee.org</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Tier-1 Journalism</strong></td>
+      <td><span class="badge badge-blue">80.0</span></td>
+      <td><code>reuters.com</code>, <code>apnews.com</code>, <code>bbc.com</code>, <code>nytimes.com</code>, <code>wsj.com</code>, <code>theguardian.com</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Curated References</strong></td>
+      <td><span class="badge badge-blue">75.0</span></td>
+      <td><code>wikipedia.org</code>, <code>britannica.com</code>, <code>plato.stanford.edu</code>, <code>worldcat.org</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>General Web Public</strong></td>
+      <td><span class="badge badge-amber">55.0</span></td>
+      <td>Standard verified blogs, corporate publications, documentation portals.</td>
+    </tr>
+    <tr>
+      <td><strong>User-Generated Content</strong></td>
+      <td><span class="badge badge-red">25.0</span></td>
+      <td><code>reddit.com</code>, <code>quora.com</code>, <code>twitter.com</code>, <code>x.com</code>, <code>medium.com</code>, <code>wordpress.com</code>.</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size: 8pt; color: #64748b; margin-top: -6px;">
+  <em>Relevance Adjustment:</em> <code>Score = BaseScore + (Relevance - 0.5) * 15.0</code> (clamped to [5.0, 99.0]).
+</p>
+
+<h3>4.2 Reliability & Risk Formulation</h3>
+<div class="grid-2">
+  <div class="card">
+    <h4>Overall Reliability (0–100)</h4>
+    <p>Weighted harmonic aggregation across factual claims:</p>
+    <code>Reliability = (∑ W_i × VerdictScore_i) / (∑ W_i) × 100</code>
+    <ul style="margin-top: 4px; font-size: 8pt;">
+      <li><code>W_i = Importance × Confidence</code></li>
+      <li>Supported: <code>1.0 × min(1.0, max(0.6, SQ / 85.0))</code></li>
+      <li>Partially Supported: <code>0.65 × min(1.0, max(0.6, SQ / 85.0))</code></li>
+      <li>Unverified: <code>0.35</code> (uncertainty floor) | Contradicted: <code>0.00</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Hallucination Risk (%)</h4>
+    <p>Quantifies verified errors & epistemic uncertainty:</p>
+    <code>Risk = (∑ W_i × RiskFactor_i) / (∑ W_i) × 100</code>
+    <ul style="margin-top: 4px; font-size: 8pt;">
+      <li>Contradicted: <code>1.00</code> (confirmed hallucination)</li>
+      <li>Unverified: <code>0.50</code> (epistemic uncertainty penalty)</li>
+      <li>Partially Supported: <code>0.35</code> (minor factual deviation)</li>
+      <li>Supported: <code>0.00</code></li>
+    </ul>
+  </div>
+</div>
+
+<h3>4.3 Database Schema (SQLite)</h3>
+<pre>
+CREATE TABLE reports (
+    report_id TEXT PRIMARY KEY, question TEXT NOT NULL, answer TEXT NOT NULL,
+    model_name TEXT, created_at TEXT NOT NULL, overall_reliability REAL,
+    hallucination_risk REAL, summary_counts TEXT, score_breakdown TEXT, explanation TEXT, raw_json TEXT
+);
+CREATE TABLE claims (
+    claim_id TEXT NOT NULL, report_id TEXT NOT NULL, claim_text TEXT NOT NULL,
+    claim_type TEXT NOT NULL, importance REAL, requires_verification INTEGER,
+    verdict TEXT, confidence REAL, PRIMARY KEY (report_id, claim_id),
+    FOREIGN KEY (report_id) REFERENCES reports (report_id) ON DELETE CASCADE
+);
+CREATE TABLE evidence (
+    evidence_id TEXT NOT NULL, report_id TEXT NOT NULL, claim_id TEXT NOT NULL,
+    source_title TEXT, source_url TEXT, source_domain TEXT, source_type TEXT,
+    snippet TEXT, relevance REAL, source_quality_score REAL, PRIMARY KEY (report_id, evidence_id),
+    FOREIGN KEY (report_id) REFERENCES reports (report_id) ON DELETE CASCADE
+);
+</pre>
+
+<!-- PAGE 5: REST API & OPERATIONAL COMMANDS -->
+<div class="page-break"></div>
+
+<h2>5. REST API & Operational Execution Matrix</h2>
+
+<h3>5.1 API Endpoints Specification</h3>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 12%;">Method</th>
+      <th style="width: 28%;">Endpoint</th>
+      <th style="width: 25%;">Payload / Params</th>
+      <th style="width: 35%;">Response Structure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="badge badge-blue">GET</span></td>
+      <td><code>/api/health</code></td>
+      <td>None</td>
+      <td><code>{ status, service, version, default_model, database, critic_enabled }</code></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">POST</span></td>
+      <td><code>/api/generate</code></td>
+      <td><code>{ question, model_name? }</code></td>
+      <td><code>{ answer, model, question }</code></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">POST</span></td>
+      <td><code>/api/claims</code></td>
+      <td><code>{ text, question? }</code></td>
+      <td><code>[ { claim_id, claim, claim_type, importance, requires_verification } ]</code></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">POST</span></td>
+      <td><code>/api/verify</code></td>
+      <td><code>{ claim, evidence_list }</code></td>
+      <td><code>{ claim_id, verdict, confidence, reason, evidence_ids }</code></td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">POST</span></td>
+      <td><code>/api/analyze</code></td>
+      <td><code>{ question, answer?, model_name?, enable_critic? }</code></td>
+      <td>Full <code>VerificationReport</code> (claims, verdicts, evidence citations, reliability, risk)</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-blue">GET</span></td>
+      <td><code>/api/reports</code></td>
+      <td><code>?limit=20</code></td>
+      <td>List of recent verification report summaries</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-blue">GET</span></td>
+      <td><code>/api/reports/{id}</code></td>
+      <td>Path: <code>report_id</code></td>
+      <td>Complete structured report in JSON format</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-blue">GET</span></td>
+      <td><code>/api/reports/{id}/text</code></td>
+      <td>Path: <code>report_id</code></td>
+      <td>Formatted plain-text forensic audit report</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>5.2 Operational Commands Matrix</h3>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 30%;">Operational Task</th>
+      <th style="width: 35%;">Command (CLI / NPM / Batch)</th>
+      <th style="width: 35%;">Execution Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Start Dev Server</strong></td>
+      <td><code>npm run dev</code><br>or <code>python run.py</code></td>
+      <td>Launches FastAPI + Uvicorn on <code>http://127.0.0.1:8000</code> with auto-reload.</td>
+    </tr>
+    <tr>
+      <td><strong>Windows One-Click</strong></td>
+      <td><code>start_app.bat</code></td>
+      <td>Launches server using <code>.venv\Scripts\python.exe</code> in a dedicated command window.</td>
+    </tr>
+    <tr>
+      <td><strong>Run PyTest Suite</strong></td>
+      <td><code>npm test</code><br>or <code>python run.py --test</code></td>
+      <td>Executes agent, retriever, verifier, and scoring test suite.</td>
+    </tr>
+    <tr>
+      <td><strong>Adversarial Benchmark</strong></td>
+      <td><code>npm run benchmark</code><br>or <code>python run.py --benchmark</code></td>
+      <td>Runs 10 adversarial benchmarks, calculating Precision, Recall, F1, and Latency.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer-note">
+  AI Hallucination Detection & Verification System Technical Specifications • Generated October 2026
+</div>
+
+</body>
+</html>
