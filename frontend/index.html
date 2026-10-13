@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Hallucination Detection & Verification System</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-icon">🛡️</div>
+        <div>
+          <h1>AI Hallucination Detector</h1>
+          <p class="subtitle">Autonomous Claim-Level Verification & Grounded Fact-Checking</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="badge badge-system" id="system-status">● System Ready</span>
+        <button id="view-history-btn" class="btn btn-secondary btn-sm">Recent Audits</button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Input Card -->
+      <section class="card input-card">
+        <div class="card-header">
+          <h2>1. Question & Answer Input</h2>
+          <div class="sample-actions">
+            <span>Quick Samples:</span>
+            <button class="btn-link" onclick="loadSample('telephone')">Alexander Graham Bell</button>
+            <button class="btn-link" onclick="loadSample('spacex_wrong')">SpaceX (Wrong Year)</button>
+            <button class="btn-link" onclick="loadSample('apollo')">Apollo 11</button>
+            <button class="btn-link" onclick="loadSample('fake_citation')">Fake Citation</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="question-input">User Question</label>
+          <input type="text" id="question-input" placeholder="e.g. Who invented the telephone and when?" value="Who invented the telephone?">
+        </div>
+
+        <div class="input-mode-tabs">
+          <button class="tab-btn active" id="tab-paste" onclick="switchMode('paste')">Paste AI Answer</button>
+          <button class="tab-btn" id="tab-generate" onclick="switchMode('generate')">Generate with Model</button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="model-select">Target Model / Attribution</label>
+            <select id="model-select">
+              <option value="hybrid-verifier-v1">Hybrid Multi-Agent Verifier (Default)</option>
+              <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+              <option value="gpt-4o-mini">GPT-4o Mini</option>
+              <option value="custom-input">External LLM Output</option>
+            </select>
+          </div>
+          <div class="form-group critic-toggle-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="critic-toggle" checked>
+              <span>Enable Adversarial Critic Pass</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="answer-input">AI-Generated Answer</label>
+            <button id="btn-generate-inline" class="btn btn-secondary btn-sm" style="display:none;" onclick="triggerGenerate()">
+              ⚡ Generate Answer Now
+            </button>
+          </div>
+          <textarea id="answer-input" rows="4" placeholder="Paste or generate an AI response to verify...">Alexander Graham Bell invented the telephone in 1876 and received the official patent for the acoustic telegraph.</textarea>
+        </div>
+
+        <div class="action-bar">
+          <button id="btn-verify" class="btn btn-primary btn-lg" onclick="startVerification()">
+            <span class="btn-icon">🔍</span> Start Hallucination Verification
+          </button>
+        </div>
+      </section>
+
+      <!-- Progress Stepper -->
+      <section id="progress-container" class="card progress-card" style="display: none;">
+        <div class="progress-header">
+          <div class="spinner"></div>
+          <div>
+            <h3 id="progress-step-title">Initializing Verification Pipeline...</h3>
+            <p id="progress-step-desc">Orchestrating autonomous verification agents...</p>
+          </div>
+        </div>
+        <div class="stepper-bar">
+          <div class="step-dot active" id="step-extract" title="Extracting Claims">1</div>
+          <div class="step-line" id="line-1"></div>
+          <div class="step-dot" id="step-normalize" title="Normalizing Queries">2</div>
+          <div class="step-line" id="line-2"></div>
+          <div class="step-dot" id="step-retrieve" title="Retrieving Evidence">3</div>
+          <div class="step-line" id="line-3"></div>
+          <div class="step-dot" id="step-verify" title="Verifying Claims">4</div>
+          <div class="step-line" id="line-4"></div>
+          <div class="step-dot" id="step-critic" title="Adversarial Critic">5</div>
+          <div class="step-line" id="line-5"></div>
+          <div class="step-dot" id="step-score" title="Scoring Reliability">6</div>
+        </div>
+      </section>
+
+      <!-- Results Dashboard -->
+      <section id="results-container" class="results-container" style="display: none;">
+        <!-- Metrics Summary Card -->
+        <div class="card summary-card">
+          <div class="summary-top">
+            <div class="score-dial">
+              <div class="dial-inner">
+                <span class="dial-value" id="res-reliability">0</span>
+                <span class="dial-label">/ 100</span>
+              </div>
+              <div class="dial-title">Overall Reliability</div>
+            </div>
+
+            <div class="risk-badge-box">
+              <div class="risk-indicator" id="res-risk-container">
+                <span class="risk-title">Estimated Hallucination Risk</span>
+                <span class="risk-value" id="res-risk">0%</span>
+              </div>
+              <div class="model-info-tag" id="res-model-info">Model: default</div>
+            </div>
+
+            <div class="counts-grid">
+              <div class="count-card count-supported">
+                <div class="count-num" id="cnt-supported">0</div>
+                <div class="count-name">SUPPORTED</div>
+              </div>
+              <div class="count-card count-partial">
+                <div class="count-num" id="cnt-partial">0</div>
+                <div class="count-name">PARTIALLY SUPPORTED</div>
+              </div>
+              <div class="count-card count-contradicted">
+                <div class="count-num" id="cnt-contradicted">0</div>
+                <div class="count-name">CONTRADICTED</div>
+              </div>
+              <div class="count-card count-unverified">
+                <div class="count-num" id="cnt-unverified">0</div>
+                <div class="count-name">UNVERIFIED</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="explanation-box">
+            <strong>Audit Summary:</strong>
+            <p id="res-explanation">Analyzing claims and evidence...</p>
+          </div>
+
+          <div class="report-actions">
+            <button class="btn btn-secondary btn-sm" onclick="exportTextReport()">📄 Copy Plain Text Audit</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportJsonReport()">💾 Download JSON</button>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <span class="filter-label">Filter Claims:</span>
+          <button class="filter-btn active" onclick="filterClaims('ALL')">All Claims (<span id="filter-cnt-all">0</span>)</button>
+          <button class="filter-btn" onclick="filterClaims('CONTRADICTED')">Contradicted (<span id="filter-cnt-contra">0</span>)</button>
+          <button class="filter-btn" onclick="filterClaims('SUPPORTED')">Supported (<span id="filter-cnt-supp">0</span>)</button>
+          <button class="filter-btn" onclick="filterClaims('PARTIALLY_SUPPORTED')">Partially Supported (<span id="filter-cnt-part">0</span>)</button>
+          <button class="filter-btn" onclick="filterClaims('UNVERIFIED')">Unverified (<span id="filter-cnt-unver">0</span>)</button>
+        </div>
+
+        <!-- Claims & Evidence Feed -->
+        <div id="claims-feed" class="claims-feed">
+          <!-- Dynamically populated claim cards -->
+        </div>
+      </section>
+    </main>
+
+    <!-- History Drawer Modal -->
+    <div id="history-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Recent Verification Audits</h3>
+          <button class="close-btn" onclick="closeHistoryModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div id="history-list" class="history-list">
+            <p class="text-muted">Loading past reports...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

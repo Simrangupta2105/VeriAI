@@ -1,0 +1,108 @@
+{
+  "metrics": {
+    "total_test_cases": 10,
+    "true_positives": 7,
+    "false_positives": 3,
+    "false_negatives": 0,
+    "true_negatives": 0,
+    "precision": 0.7,
+    "recall": 1.0,
+    "f1_score": 0.8235,
+    "verification_accuracy": 0.5833,
+    "mean_confidence": 0.6992,
+    "expected_calibration_error": 0.1158,
+    "average_latency_sec": 4.27
+  },
+  "cases": [
+    {
+      "id": "CASE-01",
+      "category": "Completely False Fact",
+      "reliability": "55.2/100",
+      "risk": "35.0%",
+      "detected_verdicts": "PARTIALLY_SUPPORTED",
+      "time_sec": "3.41s",
+      "eval_status": "TP (Detected)"
+    },
+    {
+      "id": "CASE-02",
+      "category": "Incorrect Date",
+      "reliability": "5.0/100",
+      "risk": "98.0%",
+      "detected_verdicts": "CONTRADICTED",
+      "time_sec": "2.81s",
+      "eval_status": "TP (Detected)"
+    },
+    {
+      "id": "CASE-03",
+      "category": "Mixed True and Fabricated",
+      "reliability": "17.6/100",
+      "risk": "79.0%",
+      "detected_verdicts": "PARTIALLY_SUPPORTED, CONTRADICTED",
+      "time_sec": "6.72s",
+      "eval_status": "TP (Detected)"
+    },
+    {
+      "id": "CASE-04",
+      "category": "Fake Citation",
+      "reliability": "35.0/100",
+      "risk": "50.0%",
+      "detected_verdicts": "UNVERIFIED",
+      "time_sec": "5.83s",
+      "eval_status": "TP (Detected)"
+    },
+    {
+      "id": "CASE-05",
+      "category": "Disputed / Conflicting Sources",
+      "reliability": "56.6/100",
+      "risk": "35.0%",
+      "detected_verdicts": "PARTIALLY_SUPPORTED",
+      "time_sec": "3.37s",
+      "eval_status": "FP (False Alarm)"
+    },
+    {
+      "id": "CASE-06",
+      "category": "Outdated Fact",
+      "reliability": "5.0/100",
+      "risk": "98.0%",
+      "detected_verdicts": "CONTRADICTED",
+      "time_sec": "3.34s",
+      "eval_status": "TP (Detected)"
+    },
+    {
+      "id": "CASE-07",
+      "category": "Obscure Fact",
+      "reliability": "35.0/100",
+      "risk": "50.0%",
+      "detected_verdicts": "UNVERIFIED",
+      "time_sec": "5.13s",
+      "eval_status": "FP (False Alarm)"
+    },
+    {
+      "id": "CASE-08",
+      "category": "Subtly Wrong Calculation",
+      "reliability": "5.0/100",
+      "risk": "98.0%",
+      "detected_verdicts": "CONTRADICTED",
+      "time_sec": "6.36s",
+      "eval_status": "TP (Detected)"
+    },
+    {
+      "id": "CASE-09",
+      "category": "Misleading Context",
+      "reliability": "54.0/100",
+      "risk": "35.0%",
+      "detected_verdicts": "PARTIALLY_SUPPORTED",
+      "time_sec": "2.99s",
+      "eval_status": "FP (False Alarm)"
+    },
+    {
+      "id": "CASE-10",
+      "category": "Multi-Model Consensus Fallacy",
+      "reliability": "35.0/100",
+      "risk": "50.0%",
+      "detected_verdicts": "UNVERIFIED",
+      "time_sec": "2.68s",
+      "eval_status": "TP (Detected)"
+    }
+  ]
+}
