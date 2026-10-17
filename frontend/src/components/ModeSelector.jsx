@@ -1,0 +1,78 @@
+import React from 'react';
+import { Zap, GitCompare, SearchCheck } from 'lucide-react';
+
+export default function ModeSelector({ mode, setMode }) {
+  const modes = [
+    {
+      id: 'quick',
+      title: 'Quick Mode',
+      desc: 'Single LLM baseline response',
+      icon: Zap,
+      badge: 'Fastest',
+    },
+    {
+      id: 'verify',
+      title: 'Verify Mode',
+      desc: 'Multi-LLM agreement & claim discrepancy detection',
+      icon: GitCompare,
+      badge: 'Cross-Check',
+    },
+    {
+      id: 'deep',
+      title: 'Deep Research',
+      desc: 'Multi-LLM + Web Evidence + Claim Verification + Grounded Synthesis',
+      icon: SearchCheck,
+      badge: 'Full Verification',
+    },
+  ];
+
+  return (
+    <div className="space-y-2">
+      <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        Verification Depth
+      </label>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {modes.map((m) => {
+          const Icon = m.icon;
+          const isActive = mode === m.id;
+          return (
+            <div
+              key={m.id}
+              onClick={() => setMode(m.id)}
+              className={`cursor-pointer rounded-lg border p-3.5 transition-all select-none relative overflow-hidden ${
+                isActive
+                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700 shadow-sm ring-1 ring-blue-200 dark:ring-blue-800'
+                  : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700'
+              }`}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-2">
+                  <div
+                    className={`p-1.5 rounded-md ${
+                      isActive ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-400'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-900 dark:text-slate-100' : 'text-gray-700 dark:text-slate-300'}`}>
+                    {m.title}
+                  </span>
+                </div>
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
+                    isActive
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
+                      : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-600'
+                  }`}
+                >
+                  {m.badge}
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 dark:text-slate-400 mt-2 leading-relaxed">{m.desc}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
