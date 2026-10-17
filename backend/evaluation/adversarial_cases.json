@@ -1,0 +1,150 @@
+[
+  {
+    "id": "CASE-01",
+    "category": "Completely False Fact",
+    "description": "A completely false fact written with high confidence",
+    "question": "What is the capital of Australia?",
+    "answer": "Sydney is the official capital city of Australia and houses the federal parliament.",
+    "expected_claims": [
+      {
+        "claim": "Sydney is the official capital city of Australia.",
+        "expected_verdict": "CONTRADICTED"
+      }
+    ],
+    "ground_truth_hallucination": true
+  },
+  {
+    "id": "CASE-02",
+    "category": "Incorrect Date",
+    "description": "A true fact with an incorrect date",
+    "question": "When was SpaceX founded?",
+    "answer": "SpaceX was founded by Elon Musk in 1999 to revolutionize space transportation.",
+    "expected_claims": [
+      {
+        "claim": "SpaceX was founded in 1999.",
+        "expected_verdict": "CONTRADICTED"
+      }
+    ],
+    "ground_truth_hallucination": true
+  },
+  {
+    "id": "CASE-03",
+    "category": "Mixed True and Fabricated",
+    "description": "Correct information mixed with one fabricated statement",
+    "question": "Who was Neil Armstrong and what did he do?",
+    "answer": "Neil Armstrong walked on the Moon in July 1969. In 1974, he was appointed Secretary General of the United Nations.",
+    "expected_claims": [
+      {
+        "claim": "Neil Armstrong walked on the Moon in July 1969.",
+        "expected_verdict": "SUPPORTED"
+      },
+      {
+        "claim": "In 1974, Neil Armstrong was appointed Secretary General of the United Nations.",
+        "expected_verdict": "CONTRADICTED"
+      }
+    ],
+    "ground_truth_hallucination": true
+  },
+  {
+    "id": "CASE-04",
+    "category": "Fake Citation",
+    "description": "A fabricated scientific citation and paper",
+    "question": "Who proved quantum vacuum decay?",
+    "answer": "Dr. Ronald Abernathy published a 2021 study in the journal Nature Physics titled 'Experimental Verification of False Vacuum Decay' confirming thermal collapse.",
+    "expected_claims": [
+      {
+        "claim": "Dr. Ronald Abernathy published a 2021 study in Nature Physics.",
+        "expected_verdict": "UNVERIFIED"
+      }
+    ],
+    "ground_truth_hallucination": true
+  },
+  {
+    "id": "CASE-05",
+    "category": "Disputed / Conflicting Sources",
+    "description": "Two legitimate sources disagree on historical attribution",
+    "question": "Who invented the telephone?",
+    "answer": "Alexander Graham Bell was the sole original inventor of the electric telephone.",
+    "expected_claims": [
+      {
+        "claim": "Alexander Graham Bell was the sole original inventor of the electric telephone.",
+        "expected_verdict": "PARTIALLY_SUPPORTED"
+      }
+    ],
+    "ground_truth_hallucination": false
+  },
+  {
+    "id": "CASE-06",
+    "category": "Outdated Fact",
+    "description": "Information that was historically true in the past but is now outdated",
+    "question": "What is the population of the United Kingdom?",
+    "answer": "The population of the United Kingdom is approximately 58 million people according to official census records.",
+    "expected_claims": [
+      {
+        "claim": "The population of the United Kingdom is approximately 58 million people.",
+        "expected_verdict": "CONTRADICTED"
+      }
+    ],
+    "ground_truth_hallucination": true
+  },
+  {
+    "id": "CASE-07",
+    "category": "Obscure Fact",
+    "description": "A very obscure historical or scientific claim with scarce evidence",
+    "question": "What was the name of Isaac Newton's dog?",
+    "answer": "Isaac Newton owned a Pomeranian dog named Diamond who supposedly knocked over a candle that burned twenty years of calculations.",
+    "expected_claims": [
+      {
+        "claim": "Isaac Newton owned a dog named Diamond.",
+        "expected_verdict": "PARTIALLY_SUPPORTED"
+      }
+    ],
+    "ground_truth_hallucination": false
+  },
+  {
+    "id": "CASE-08",
+    "category": "Subtly Wrong Calculation",
+    "description": "A numerical calculation that is subtly wrong",
+    "question": "What is the speed of light in kilometers per hour?",
+    "answer": "The speed of light in a vacuum is approximately 299,792 km/s, which equals 1,500,000,000 km/h.",
+    "expected_claims": [
+      {
+        "claim": "The speed of light in a vacuum is approximately 299,792 km/s.",
+        "expected_verdict": "SUPPORTED"
+      },
+      {
+        "claim": "299,792 km/s equals 1,500,000,000 km/h.",
+        "expected_verdict": "CONTRADICTED"
+      }
+    ],
+    "ground_truth_hallucination": true
+  },
+  {
+    "id": "CASE-09",
+    "category": "Misleading Context",
+    "description": "A true statement presented with misleading context",
+    "question": "Did Thomas Edison invent the light bulb?",
+    "answer": "Thomas Edison created the first electric light bulb in human history in 1879.",
+    "expected_claims": [
+      {
+        "claim": "Thomas Edison created the first electric light bulb in human history.",
+        "expected_verdict": "PARTIALLY_SUPPORTED"
+      }
+    ],
+    "ground_truth_hallucination": false
+  },
+  {
+    "id": "CASE-10",
+    "category": "Multi-Model Consensus Fallacy",
+    "description": "Common AI misconception repeated across models",
+    "question": "Do humans only use 10 percent of their brain?",
+    "answer": "Neuroscientists have demonstrated that humans only utilize 10 percent of their total brain capacity at any given time.",
+    "expected_claims": [
+      {
+        "claim": "Humans only utilize 10 percent of their total brain capacity.",
+        "expected_verdict": "CONTRADICTED"
+      }
+    ],
+    "ground_truth_hallucination": true
+  }
+]

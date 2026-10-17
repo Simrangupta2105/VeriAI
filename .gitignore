@@ -1,0 +1,24 @@
+# Python caches & build artifacts
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+.pytest_cache/
+
+# SQLite databases
+*.db
+*.sqlite3
+
+# Environment variables & secrets
+.env
+*.env
+.env.*
+
+# Virtual environments
+.venv/
+venv/
+
+# Node.js
+node_modules/
+npm-debug.log*
