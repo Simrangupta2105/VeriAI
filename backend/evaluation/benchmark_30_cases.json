@@ -1,0 +1,242 @@
+[
+  {
+    "id": "CASE-01",
+    "category": "Geography - False Capital",
+    "question": "What is the capital of Australia?",
+    "answer": "Sydney is the official capital city of Australia.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-02",
+    "category": "History - Temporal Hallucination",
+    "question": "When was SpaceX founded?",
+    "answer": "SpaceX was founded by Elon Musk in 1999.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-03",
+    "category": "Politics - False Identity/Role",
+    "question": "Who is Narendra Modi?",
+    "answer": "Narendra Modi is an Indian actor and film director.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-04",
+    "category": "Astronomy - Physical Misconception",
+    "question": "Which mountain is closest to the Moon?",
+    "answer": "Mount Everest is always the closest point on Earth's surface to the Moon because it is the highest mountain above sea level.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-05",
+    "category": "Biology - False Definition",
+    "question": "What is mitochondria?",
+    "answer": "Mitochondria is a substance used in chemistry.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-06",
+    "category": "History - Fabricated Role",
+    "question": "What office did Neil Armstrong hold?",
+    "answer": "Neil Armstrong walked on the Moon and was appointed Secretary General of the United Nations.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-07",
+    "category": "Medicine - Debunked Myth",
+    "question": "How much of our brain do we use?",
+    "answer": "Humans only utilize 10 percent of their total brain capacity.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-08",
+    "category": "Physics - Incorrect Numerical Value",
+    "question": "What is the speed of light in km/h?",
+    "answer": "The speed of light in vacuum is exactly 1,500,000,000 km/h.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-09",
+    "category": "Science - Fabricated Citation",
+    "question": "Who proved quantum vacuum decay?",
+    "answer": "Dr. Ronald Abernathy published a 2021 study in Nature Physics proving false vacuum decay.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "UNVERIFIED"
+  },
+  {
+    "id": "CASE-10",
+    "category": "History - Incorrect Year",
+    "question": "When did humans first land on the Moon?",
+    "answer": "Apollo 11 landed humans on the Moon on July 20, 1967.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-11",
+    "category": "Geography - False Continent",
+    "question": "Where is Mount Kilimanjaro?",
+    "answer": "Mount Kilimanjaro is a dormant volcano situated in South America.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-12",
+    "category": "Technology - False Founder",
+    "question": "Who founded Apple Computer?",
+    "answer": "Apple Computer was founded by Bill Gates and Paul Allen in 1976.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-13",
+    "category": "Literature - False Author",
+    "question": "Who wrote Romeo and Juliet?",
+    "answer": "Romeo and Juliet was written by Charles Dickens in 1845.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "CONTRADICTED"
+  },
+  {
+    "id": "CASE-14",
+    "category": "Chemistry - Fabricated Discovery",
+    "question": "Who discovered Element 119?",
+    "answer": "Dr. Harold Sterling at Oxford University synthesized and confirmed element 119 in 2023.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "UNVERIFIED"
+  },
+  {
+    "id": "CASE-15",
+    "category": "Space - Fabricated Mars Mission",
+    "question": "Has a human crew landed on Mars?",
+    "answer": "NASA landed the first human crew on Mars in October 2022 during Artemis IV.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "UNVERIFIED"
+  },
+  {
+    "id": "CASE-16",
+    "category": "History - Factual Truth",
+    "question": "Who invented the telephone?",
+    "answer": "Alexander Graham Bell invented the telephone in 1876.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-17",
+    "category": "Politics - Factual Truth",
+    "question": "Who was the first president of the United States?",
+    "answer": "George Washington served as the first president of the United States from 1789 to 1797.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-18",
+    "category": "Technology - Factual Truth",
+    "question": "When was Python released?",
+    "answer": "Python was first released in 1991 by Guido van Rossum.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-19",
+    "category": "History - Factual Truth",
+    "question": "When did Apollo 11 land on the Moon?",
+    "answer": "Apollo 11 landed on the Moon on July 20, 1969.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-20",
+    "category": "Geography - Factual Truth",
+    "question": "What is the capital of France?",
+    "answer": "Paris is the official capital city of France.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-21",
+    "category": "Technology - Factual Truth",
+    "question": "When was SpaceX founded?",
+    "answer": "SpaceX was founded by Elon Musk in 2002.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-22",
+    "category": "Physics - Factual Truth",
+    "question": "What did Albert Einstein receive the Nobel Prize for?",
+    "answer": "Albert Einstein was awarded the 1921 Nobel Prize in Physics for his discovery of the law of the photoelectric effect.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-23",
+    "category": "Biology - Factual Truth",
+    "question": "Who discovered penicillin?",
+    "answer": "Alexander Fleming discovered penicillin in 1928 at St Mary's Hospital in London.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-24",
+    "category": "Geography - Factual Truth",
+    "question": "What is the longest river in the world?",
+    "answer": "The Nile River is traditionally considered the longest river in the world.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-25",
+    "category": "Astronomy - Factual Truth",
+    "question": "What is the closest planet to the Sun?",
+    "answer": "Mercury is the closest planet to the Sun in the Solar System.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-26",
+    "category": "History - Superlative / Nuanced",
+    "question": "Who invented the computer?",
+    "answer": "Alan Turing single-handedly invented the world's first computer in 1936.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "id": "CASE-27",
+    "category": "Science - Nuanced Attribution",
+    "question": "Who discovered DNA structure?",
+    "answer": "James Watson and Francis Crick solely discovered the double helix structure of DNA in 1953 without any external data.",
+    "ground_truth_hallucination": true,
+    "expected_verdict": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "id": "CASE-28",
+    "category": "Biology - Factual Truth",
+    "question": "What is the powerhouse of the cell?",
+    "answer": "Mitochondria are membrane-bound cell organelles that generate most of the chemical energy needed to power the cell.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-29",
+    "category": "Technology - Factual Truth",
+    "question": "When was the World Wide Web invented?",
+    "answer": "Tim Berners-Lee invented the World Wide Web in 1989 while working at CERN.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  },
+  {
+    "id": "CASE-30",
+    "category": "Geography - Factual Truth",
+    "question": "What is the capital of Japan?",
+    "answer": "Tokyo is the official capital city of Japan.",
+    "ground_truth_hallucination": false,
+    "expected_verdict": "SUPPORTED"
+  }
+]

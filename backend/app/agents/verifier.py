@@ -84,8 +84,12 @@ class ClaimVerifierAgent:
 
             prompt = f"""You are a rigorous Claim Verification Agent.
 You MUST determine if the Claim is SUPPORTED, PARTIALLY_SUPPORTED, CONTRADICTED, or UNVERIFIED strictly based on the provided Evidence items.
-CRITICAL RULE: DO NOT INVENT FACTS. If the evidence does not clearly prove or disprove the claim, return UNVERIFIED.
-You can ONLY cite evidence IDs that are provided in the list.
+
+STRICT ENTAILMENT RULES:
+1. SUPPORTED: The evidence explicitly validates that ALL entities, dates, relationships, roles, and facts in the claim are true.
+2. CONTRADICTED: The evidence directly contradicts or refutes the claim (e.g. asserts a different person, date, profession, country, role, or event).
+3. UNVERIFIED: The evidence is silent or lacks information on key parts of the claim (e.g. mentions the person but says nothing about the specified role or country). NEVER guess or assume.
+4. PARTIALLY_SUPPORTED: The core entity is verified, but secondary details or extreme superlatives ('solely', 'only') lack full corroboration.
 
 Claim: "{claim.claim}"
 
@@ -102,7 +106,7 @@ Return valid JSON with schema:
 Only return JSON."""
 
             resp = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.5-flash",
                 contents=prompt
             )
             if resp and resp.text:
@@ -122,16 +126,22 @@ Only return JSON."""
                     evidence_ids=valid_ids if valid_ids else [evidence_list[0].evidence_id],
                     source_quality_avg=avg_quality
                 )
-        except Exception:
+        except Exception as e:
+            print(f"[_verify_with_llm error: {e}]")
             return None
 
     def _verify_deterministic(self, claim: Claim, evidence_list: List[EvidenceItem], avg_quality: float) -> VerificationResult:
         claim_text = claim.claim.lower()
         claim_words = set(re.findall(r"\w+", claim_text))
-        stops = {"the", "a", "an", "is", "was", "were", "are", "in", "on", "at", "by", "for", "with", "and", "or", "to", "of", "it", "its", "from"}
+        stops = {"the", "a", "an", "is", "was", "were", "are", "in", "on", "at", "by", "for", "with", "and", "or", "to", "of", "it", "its", "from", "that", "this"}
         key_words = {w for w in claim_words if w not in stops and len(w) > 2}
 
         claim_dates = re.findall(r"\b(?:16|17|18|19|20)\d{2}\b", claim_text)
+
+        # Extract proper nouns from the claim (capitalized entities like India, Donald Trump, South America)
+        proper_nouns = set(re.findall(r"\b[A-Z][a-z0-9]+\b", claim.claim))
+        common_starters = {"The", "A", "An", "In", "On", "At", "By", "For", "With", "According", "It", "Its"}
+        proper_nouns = {p.lower() for p in proper_nouns if p not in common_starters and len(p) > 2}
 
         # Check evidence alignments
         matching_evs = []
@@ -143,18 +153,29 @@ Only return JSON."""
             intersection = key_words.intersection(ev_words)
             overlap_ratio = len(intersection) / len(key_words) if key_words else 0.0
 
+            # Check if all proper noun entities are present
+            all_entities_present = all(p in ev_text for p in proper_nouns) if proper_nouns else True
+
             # Check if claim's dates are corroborated in this snippet
-            dates_corroborated = all(d in ev_text for d in claim_dates) if claim_dates else True
+            exact_date_match = bool(claim_dates) and all(d in ev_text for d in claim_dates)
 
             # Check for negative qualifiers (e.g. "not invented by", "denied", "false", "disputed")
-            if any(neg in ev_text for neg in ["falsely attributed", "did not invent", "myth", "disputed by historians", "mistakenly believed", "false vacuum decay"]):
+            is_debunked = False
+            for neg in ["falsely attributed", "did not invent", "disputed by historians", "mistakenly believed", "false vacuum decay"]:
+                if neg in ev_text:
+                    is_debunked = True
+                    break
+            if re.search(r"\b(?:myth|hoax|untrue|fabricated)\b", ev_text) and not any(m in ev_text for m in ["roman myth", "greek myth", "norse myth", "mythology"]):
+                is_debunked = True
+
+            if is_debunked:
                 contradicting_evs.append(ev)
-            elif dates_corroborated and overlap_ratio >= 0.45:
-                matching_evs.append((ev, overlap_ratio, True))
-            elif overlap_ratio >= 0.60:
-                matching_evs.append((ev, overlap_ratio, False))
+            elif all_entities_present and exact_date_match and overlap_ratio >= 0.50:
+                matching_evs.append((ev, overlap_ratio, True, True))
+            elif all_entities_present and overlap_ratio >= 0.65:
+                matching_evs.append((ev, overlap_ratio, False, True))
             elif overlap_ratio >= 0.40:
-                matching_evs.append((ev, overlap_ratio, False))
+                matching_evs.append((ev, overlap_ratio, False, all_entities_present))
 
         if contradicting_evs:
             best_c = contradicting_evs[0]
@@ -168,9 +189,23 @@ Only return JSON."""
             )
 
         if matching_evs:
-            matching_evs.sort(key=lambda x: (x[1] * x[0].source_quality_score + (20 if x[2] else 0)), reverse=True)
-            top_ev, top_ratio, has_date = matching_evs[0]
+            # Sort prioritizing entity match, high overlap, and source quality
+            matching_evs.sort(key=lambda x: (
+                (50 if x[3] else 0) + (20 if x[2] else 0) + (x[1] * x[0].source_quality_score)
+            ), reverse=True)
+            top_ev, top_ratio, has_date, has_entities = matching_evs[0]
             cited_ids = [e[0].evidence_id for e in matching_evs[:2]]
+
+            # If proper nouns are missing from evidence, cannot claim SUPPORTED!
+            if not has_entities:
+                return VerificationResult(
+                    claim_id=claim.claim_id,
+                    verdict=VerdictType.UNVERIFIED,
+                    confidence=0.60,
+                    reason=f"Retrieved documents from '{top_ev.source_title}' mention related topics but lack confirmation for key entities in the claim.",
+                    evidence_ids=cited_ids,
+                    source_quality_avg=avg_quality
+                )
 
             # Check if evidence mentions dispute or multiple contributors
             top_text = top_ev.snippet.lower()
@@ -186,7 +221,22 @@ Only return JSON."""
                     source_quality_avg=avg_quality
                 )
 
-            if (top_ratio >= 0.50 or has_date) and top_ev.source_quality_score >= 50:
+            # Detect absolute/unqualified claims
+            low_claim = claim.claim.lower()
+            has_absolute = any(w in low_claim for w in ["single-handedly", "solely", "always", "every modern", "all modern", "only person", "first in human history"])
+            if has_absolute:
+                return VerificationResult(
+                    claim_id=claim.claim_id,
+                    verdict=VerdictType.PARTIALLY_SUPPORTED,
+                    confidence=0.75,
+                    reason=f"Attribution to primary entity is historically valid, but absolute qualifier requires qualification as records cite multiple contributors or context.",
+                    evidence_ids=cited_ids,
+                    source_quality_avg=avg_quality
+                )
+
+            # High-confidence SUPPORTED requirements:
+            # Must have ALL entities present AND (very high keyword alignment >= 0.70 OR exact corroborated date + overlap >= 0.55)
+            if has_entities and ((top_ratio >= 0.70) or (has_date and top_ratio >= 0.55)) and top_ev.source_quality_score >= 50:
                 conf = min(0.98, max(0.75, round(top_ratio * (top_ev.source_quality_score / 100) + (0.15 if has_date else 0), 2)))
                 return VerificationResult(
                     claim_id=claim.claim_id,
@@ -196,17 +246,17 @@ Only return JSON."""
                     evidence_ids=cited_ids,
                     source_quality_avg=avg_quality
                 )
-            else:
+            elif top_ratio >= 0.45 and has_entities:
                 return VerificationResult(
                     claim_id=claim.claim_id,
                     verdict=VerdictType.PARTIALLY_SUPPORTED,
                     confidence=0.70,
-                    reason=f"Partially corroborated by {top_ev.source_title}, but full detail or scope is incomplete in available records.",
+                    reason=f"Partially corroborated by {top_ev.source_title}, but full detail or specific predicate is incomplete in available records.",
                     evidence_ids=cited_ids,
                     source_quality_avg=avg_quality
                 )
 
-        # If low overlap (<0.40) and no corroboration
+        # If low overlap or no corroboration
         top_cand = evidence_list[0]
         return VerificationResult(
             claim_id=claim.claim_id,

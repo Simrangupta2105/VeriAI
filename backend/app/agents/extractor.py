@@ -20,7 +20,7 @@ class ClaimExtractorAgent:
                 client = genai.Client(api_key=gemini_key)
                 prompt = self._build_extraction_prompt(text, question)
                 resp = client.models.generate_content(
-                    model="gemini-2.5-flash",
+                    model="gemini-3.5-flash",
                     contents=prompt
                 )
                 if resp and resp.text:
@@ -31,7 +31,7 @@ class ClaimExtractorAgent:
                 pass
 
         # Syntactic and Rule-Based Atomic Decomposition Engine
-        return self._extract_claims_syntactic(text)
+        return self._extract_claims_syntactic(text, question=question)
 
     def _build_extraction_prompt(self, text: str, question: Optional[str] = None) -> str:
         return f"""You are a specialized Claim Extraction Agent for hallucination detection.
@@ -81,11 +81,21 @@ Only return the JSON array, no commentary."""
         except Exception:
             return []
 
-    def _extract_claims_syntactic(self, text: str) -> List[Claim]:
+    def _extract_claims_syntactic(self, text: str, question: Optional[str] = None) -> List[Claim]:
         """High-precision syntactic clause splitter to yield atomic factual claims."""
         claims: List[Claim] = []
         if not text:
             return claims
+
+        # Extract target subject from question if answer begins with an elided verb
+        question_subject = None
+        if question:
+            q_clean = question.strip().rstrip("?").strip()
+            # Match "what is/are [Subject]", "who is/was [Subject]", "which [Entity] is [Subject]"
+            m = re.search(r"^(?:what|who|which(?:\s+[a-z]+)?)\s+(?:is|are|was|were)\s+(.+)$", q_clean, flags=re.IGNORECASE)
+            if m:
+                question_subject = m.group(1).strip()
+                question_subject = re.sub(r"^(?:the|a|an)\s+", "", question_subject, flags=re.IGNORECASE).strip()
 
         # Split into sentences
         sentences = re.split(r"(?<=[.!?])\s+", text.strip())
@@ -93,7 +103,14 @@ Only return the JSON array, no commentary."""
 
         for sentence in sentences:
             s_clean = sentence.strip()
-            if not s_clean or len(s_clean) < 10:
+            if not s_clean:
+                continue
+
+            # If answer is a fragment starting with linking verb and we have a question subject, rehydrate!
+            if question_subject and re.match(r"^(?:is|are|was|were)\s+", s_clean, flags=re.IGNORECASE):
+                s_clean = f"{question_subject.capitalize()} {s_clean}"
+
+            if len(s_clean) < 10:
                 continue
 
             # Check if entire sentence is an opinion or subjective statement

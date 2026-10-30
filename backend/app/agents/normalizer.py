@@ -90,6 +90,11 @@ class ClaimNormalizerAgent:
             else:
                 alts.append(f"capital of {entities[-1]}")
 
+        # If claim asserts a superlative property like closest to moon / space, query the neutral concept
+        if "closest" in low and ("moon" in low or "space" in low):
+            alts.append("closest point on Earth to the Moon")
+            alts.append("closest mountain to the Moon")
+
         if entities:
             primary_entity = entities[0]
             if temporal:

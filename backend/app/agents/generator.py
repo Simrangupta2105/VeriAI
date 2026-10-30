@@ -21,7 +21,7 @@ class AnswerGeneratorAgent:
                 from google import genai
                 client = genai.Client(api_key=gemini_key)
                 # Call gemini
-                model_id = "gemini-2.5-flash" if "2.5" in model else "gemini-1.5-flash"
+                model_id = "gemini-3.5-flash"
                 response = client.models.generate_content(
                     model=model_id,
                     contents=question
