@@ -160,19 +160,41 @@ cp .env.example .env
 ```
 *(Note: The system is equipped with hybrid offline heuristics and public API integrations, allowing it to run out of the box even without external paid API keys. You can add `GEMINI_API_KEY` or `OPENAI_API_KEY` to connect live frontier models).*
 
-### 3. Launch Server & UI
+### 3. Modern React Frontend (Vite + TypeScript + Tailwind)
+
+The frontend has been upgraded to a modern React 18 SPA located in `frontend/`.
+
+- **Development Mode with Hot-Reload**:
+  ```bash
+  cd frontend
+  npm install
+  npm run dev
+  ```
+  The Vite dev server runs at **http://localhost:5173** and proxies all `/api/*` calls automatically to the FastAPI backend at port 8000.
+
+- **Production Build**:
+  ```bash
+  cd frontend
+  npm run build
+  ```
+  This creates optimized static assets in `frontend/dist`.
+
+- **Unified Single-Command Production Serving**:
+  When you run `python run.py` (or double-click `start_app.bat`), the FastAPI backend automatically checks if `frontend/dist` exists (building it if missing) and serves the Single Page Application at root (`/`) with client-side SPA routing fallback, while keeping all `/api/*` and `/docs` routes active.
+
+### 4. Launch Unified Server & UI
 Run the launcher:
 ```bash
 python run.py
 ```
-Open your browser at **http://127.0.0.1:8000** to access the interactive dashboard.
+Open your browser at **http://127.0.0.1:8000** to access the complete interactive VeriAI dashboard.
 
-### 4. Run Test Suite
+### 5. Run Test Suite
 ```bash
 python run.py --test
 ```
 
-### 5. Run Adversarial Benchmark
+### 6. Run Adversarial Benchmark
 ```bash
 python run.py --benchmark
 ```

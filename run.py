@@ -9,13 +9,30 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+def ensure_frontend_built():
+    """Build the modern React/Vite frontend if frontend/dist does not exist."""
+    dist_dir = PROJECT_ROOT / "frontend" / "dist"
+    frontend_dir = PROJECT_ROOT / "frontend"
+
+    if not dist_dir.exists() and (frontend_dir / "package.json").exists():
+        print("[>] Frontend production build not found. Building React app...")
+        try:
+            cmd = "npm run build" if sys.platform == "win32" else ["npm", "run", "build"]
+            subprocess.run(cmd, cwd=str(frontend_dir), shell=True, check=True)
+            print("[✓] Frontend built successfully.")
+        except Exception as e:
+            print(f"[!] Warning: Could not automatically build frontend ({e}).")
+            print("    Please run: cd frontend && npm install && npm run build")
+
 def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = True):
+    ensure_frontend_built()
+
     print("=" * 70)
-    print("   AI HALLUCINATION DETECTION & VERIFICATION SYSTEM")
+    print("   VERIAI — AI CLAIM VERIFICATION & HALLUCINATION DETECTOR")
     print("=" * 70)
-    print(f"[>] Dashboard UI : http://{host}:{port}")
-    print(f"[>] API Docs (UI): http://{host}:{port}/docs")
-    print(f"[>] Health Check : http://{host}:{port}/api/health")
+    print(f"[>] App Dashboard : http://{host}:{port}")
+    print(f"[>] API Docs (UI) : http://{host}:{port}/docs")
+    print(f"[>] Health Check  : http://{host}:{port}/api/health")
     print("=" * 70)
     import uvicorn
     uvicorn.run("backend.app.main:app", host=host, port=port, reload=reload)
@@ -32,7 +49,7 @@ def run_benchmark():
     asyncio.run(exec_benchmark())
 
 def main():
-    parser = argparse.ArgumentParser(description="AI Hallucination Detection & Verification System Launcher")
+    parser = argparse.ArgumentParser(description="VeriAI System Launcher")
     parser.add_argument("--test", action="store_true", help="Run the test suite")
     parser.add_argument("--benchmark", action="store_true", help="Run the adversarial evaluation benchmark")
     parser.add_argument("--port", type=int, default=8000, help="Port to bind server (default: 8000)")
