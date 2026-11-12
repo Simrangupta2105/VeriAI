@@ -1,6 +1,7 @@
 import uuid
+import asyncio
 from datetime import datetime, timezone
-from typing import Optional, Callable, Dict, Any
+from typing import Optional, Callable, Dict, Any, List
 from backend.app.models.schemas import (
     VerificationReport,
     Claim,
@@ -17,6 +18,7 @@ from backend.app.agents.critic import AdversarialCriticAgent
 from backend.app.agents.scorer import HallucinationScoringEngine
 from backend.app.services.report_generator import ReportGeneratorService
 from backend.app.database.repository import ReportRepository
+
 
 class PipelineOrchestrator:
     """Orchestrates the entire multi-agent hallucination detection and verification pipeline."""
@@ -67,12 +69,11 @@ class PipelineOrchestrator:
                 )
             ]
 
-        # 3. Normalization, Retrieval & Verification per Claim
+        # 3. Dual-LLM Parallel Verification per Claim (Zero-scraping, zero-poisoning)
         all_evidence: List[EvidenceItem] = []
         all_results: List[VerificationResult] = []
-        ev_counter = 1
 
-        for idx, claim in enumerate(claims):
+        async def process_single_claim(claim: Claim, idx: int, ev_counter_start: int):
             if progress_cb:
                 progress_cb("PROCESSING_CLAIM", {
                     "index": idx + 1,
@@ -81,24 +82,27 @@ class PipelineOrchestrator:
                     "claim_text": claim.claim
                 })
 
-            # Normalization
-            normalized = self.normalizer.normalize(claim)
-
-            # Retrieval
-            claim_evidences = await self.retriever.retrieve_for_claim(
-                claim, normalized, evidence_counter_start=ev_counter
+            # Dual-LLM verification (Gemini + Auditor)
+            verif_result, claim_evidences = await self.verifier.verify_dual_llm(
+                claim, evidence_counter_start=ev_counter_start
             )
-            ev_counter += len(claim_evidences)
-            all_evidence.extend(claim_evidences)
 
-            # Verification
-            verif_result = await self.verifier.verify(claim, claim_evidences)
-
-            # Critic Pass (Audit)
-            if enable_critic:
+            # Adversarial Critic Pass (Audit)
+            if enable_critic and claim_evidences:
                 verif_result, _ = self.critic.critique(claim, verif_result, claim_evidences)
 
-            all_results.append(verif_result)
+            return verif_result, claim_evidences
+
+        # Execute all claims concurrently
+        tasks = [
+            process_single_claim(claim, idx, (idx * 2) + 1)
+            for idx, claim in enumerate(claims)
+        ]
+        results_and_evidences = await asyncio.gather(*tasks)
+
+        for verif_res, claim_evidences in results_and_evidences:
+            all_results.append(verif_res)
+            all_evidence.extend(claim_evidences)
 
         # 4. Scoring Engine
         if progress_cb:
