@@ -19,7 +19,12 @@ export type VerdictType =
   | 'PARTIALLY_SUPPORTED'
   | 'CONTRADICTED'
   | 'UNVERIFIED'
+<<<<<<< HEAD
   | 'NOT_FACTUAL';
+=======
+  | 'NOT_FACTUAL'
+  | 'VERIFICATION_UNAVAILABLE';
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
 export interface Claim {
   claim_id: string;
@@ -54,6 +59,10 @@ export interface VerificationResult {
   critic_status: 'PASSED' | 'REVISED' | 'FLAGGED' | string;
   critic_notes?: string | null;
   discrepancy_details?: Record<string, any> | null;
+<<<<<<< HEAD
+=======
+  verification_status?: string;
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 }
 
 export interface SummaryCounts {
@@ -63,6 +72,10 @@ export interface SummaryCounts {
   contradicted: number;
   unverified: number;
   not_factual: number;
+<<<<<<< HEAD
+=======
+  unavailable?: number;
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 }
 
 export interface VerificationReport {

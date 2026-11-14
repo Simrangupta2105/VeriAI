@@ -17,7 +17,12 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5",
+<<<<<<< HEAD
     "tailwind-merge": "^3.7.0"
+=======
+    "tailwind-merge": "^3.7.0",
+    "veriai": "file:.."
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
   },
   "devDependencies": {
     "@types/node": "^24.19.2",

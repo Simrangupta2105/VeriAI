@@ -27,6 +27,10 @@ class VerdictType(str, Enum):
     CONTRADICTED = "CONTRADICTED"
     UNVERIFIED = "UNVERIFIED"
     NOT_FACTUAL = "NOT_FACTUAL"
+<<<<<<< HEAD
+=======
+    VERIFICATION_UNAVAILABLE = "VERIFICATION_UNAVAILABLE"
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
 
 class Claim(BaseModel):
@@ -69,9 +73,16 @@ class VerificationResult(BaseModel):
     reason: str
     evidence_ids: List[str] = []
     source_quality_avg: float = 0.0
+<<<<<<< HEAD
     critic_status: str = "PASSED"  # PASSED, REVISED, FLAGGED
     critic_notes: Optional[str] = None
     discrepancy_details: Optional[Dict[str, Any]] = None
+=======
+    critic_status: str = "PASSED"  # PASSED, REVISED, FLAGGED, UNAVAILABLE
+    critic_notes: Optional[str] = None
+    discrepancy_details: Optional[Dict[str, Any]] = None
+    verification_status: Optional[str] = "SUCCESS"  # SUCCESS, UNAVAILABLE, ERROR
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
 
 class VerificationReport(BaseModel):
@@ -90,6 +101,10 @@ class VerificationReport(BaseModel):
         "contradicted": 0,
         "unverified": 0,
         "not_factual": 0,
+<<<<<<< HEAD
+=======
+        "unavailable": 0,
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
     }
     claims: List[Claim] = []
     evidence: List[EvidenceItem] = []

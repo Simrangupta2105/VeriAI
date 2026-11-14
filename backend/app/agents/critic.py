@@ -9,6 +9,44 @@ class AdversarialCriticAgent:
         revised = False
         new_result = result.model_copy(deep=True)
 
+<<<<<<< HEAD
+=======
+        # 0. Check for UNAVAILABLE or Missing / Error-Placeholder Evidence
+        def is_placeholder_evidence(ev: EvidenceItem) -> bool:
+            low_s = (ev.snippet or "").lower()
+            low_t = (ev.source_title or "").lower()
+            return (
+                "service unavailable" in low_s
+                or "service unavailable" in low_t
+                or "offline" in low_t
+                or "offline" in low_s
+                or (not (ev.snippet or "").strip())
+            )
+
+        if new_result.verdict == VerdictType.VERIFICATION_UNAVAILABLE:
+            new_result.critic_status = "FLAGGED"
+            notes_str = "Verification infrastructure unavailable. Result flagged by critic."
+            new_result.critic_notes = notes_str
+            return new_result, notes_str
+
+        # For claims requiring factual verification, audit evidence existence
+        if claim.requires_verification and claim.claim_type != ClaimType.OPINION:
+            valid_evidences = [e for e in evidence_list if not is_placeholder_evidence(e)]
+            valid_cited_ids = [
+                eid for eid in (new_result.evidence_ids or [])
+                if any(e.evidence_id == eid for e in valid_evidences)
+            ]
+            if not valid_evidences or not valid_cited_ids:
+                new_result.verdict = VerdictType.VERIFICATION_UNAVAILABLE
+                new_result.confidence = 0.0
+                new_result.evidence_ids = []
+                new_result.source_quality_avg = 0.0
+                new_result.critic_status = "FLAGGED"
+                notes_str = "Critic security guard: Evidence is empty or consists only of error placeholders. Verdict revoked to VERIFICATION_UNAVAILABLE."
+                new_result.critic_notes = notes_str
+                return new_result, notes_str
+
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         # 1. Audit SUPPORTED claims against ContradictionDetector
         from backend.app.agents.contradiction import ContradictionDetector
         detector = ContradictionDetector()

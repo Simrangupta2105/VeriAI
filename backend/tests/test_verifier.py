@@ -62,8 +62,13 @@ async def test_verifier_no_evidence_unverified():
     )
     # No evidence provided
     result = await verifier.verify(claim, [])
+<<<<<<< HEAD
     assert result.verdict == VerdictType.UNVERIFIED
     assert result.confidence == 0.50
+=======
+    assert result.verdict == VerdictType.VERIFICATION_UNAVAILABLE
+    assert result.confidence == 0.0
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
 def test_adversarial_critic_overturn():
     critic = AdversarialCriticAgent()

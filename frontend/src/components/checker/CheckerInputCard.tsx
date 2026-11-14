@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Tabs } from '../ui/Tabs';
@@ -50,6 +54,14 @@ export const CheckerInputCard: React.FC<CheckerInputCardProps> = ({
   const [modelName, setModelName] = useState('hybrid-verifier-v1');
   const [enableCritic, setEnableCritic] = useState(true);
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    setQuestion(initialQuestion);
+    setAnswer(initialAnswer);
+  }, [initialQuestion, initialAnswer]);
+
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
   const generateMutation = useGenerateAnswer();
 
   const handleSelectPreset = (p: typeof PRESETS[0]) => {

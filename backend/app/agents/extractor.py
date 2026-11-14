@@ -12,6 +12,7 @@ class ClaimExtractorAgent:
 
     async def extract_claims(self, text: str, question: Optional[str] = None) -> List[Claim]:
         """Extract atomic claims using LLM if available, otherwise syntactic decomposition."""
+<<<<<<< HEAD
         # Try LLM extraction if API key is provided
         gemini_key = settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY
         if gemini_key:
@@ -29,6 +30,42 @@ class ClaimExtractorAgent:
                         return claims
             except Exception:
                 pass
+=======
+        gemini_key = settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY
+        if gemini_key:
+            try:
+                import requests
+                import asyncio
+                prompt = self._build_extraction_prompt(text, question)
+                payload = {
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "generationConfig": {
+                        "temperature": 0.1,
+                        "responseMimeType": "application/json"
+                    }
+                }
+                def _do_extract():
+                    for model in ["gemini-flash-lite-latest", "gemini-3.5-flash-lite"]:
+                        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
+                        try:
+                            resp = requests.post(url, json=payload, timeout=15)
+                            if resp.status_code == 200:
+                                data = resp.json()
+                                candidates = data.get("candidates", [])
+                                if candidates and "content" in candidates[0]:
+                                    parts = candidates[0]["content"].get("parts", [])
+                                    if parts and "text" in parts[0]:
+                                        return self._parse_llm_json(parts[0]["text"])
+                        except Exception:
+                            continue
+                    return None
+
+                claims = await asyncio.to_thread(_do_extract)
+                if claims:
+                    return claims
+            except Exception as e:
+                print(f"[Extractor LLM error: {e}]")
+>>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
         # Syntactic and Rule-Based Atomic Decomposition Engine
         return self._extract_claims_syntactic(text, question=question)
