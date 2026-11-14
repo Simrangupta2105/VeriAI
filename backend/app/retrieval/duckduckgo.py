@@ -1,12 +1,9 @@
 from typing import List
 from backend.app.retrieval.base import BaseRetriever, RawSearchResult
 import asyncio
-<<<<<<< HEAD
-=======
 import logging
 
 logger = logging.getLogger(__name__)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
 class DuckDuckGoRetriever(BaseRetriever):
     """Retrieves web search results using DuckDuckGo."""
@@ -30,13 +27,8 @@ class DuckDuckGoRetriever(BaseRetriever):
                     ddg_results = ddgs.text(query, max_results=limit)
                     for r in ddg_results:
                         items.append(r)
-<<<<<<< HEAD
-            except Exception:
-                pass
-=======
             except Exception as exc:
                 logger.exception("DuckDuckGo sync search failed for query '%s': %s", query, exc)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
             return items
 
         try:
@@ -62,13 +54,8 @@ class DuckDuckGoRetriever(BaseRetriever):
                         raw_content=body
                     )
                 )
-<<<<<<< HEAD
-        except Exception:
-            pass
-=======
         except Exception as exc:
             logger.exception("DuckDuckGo executor failed for query '%s': %s", query, exc)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
         return results
 

@@ -1,9 +1,5 @@
 import { VerdictType } from '../types';
-<<<<<<< HEAD
-import { CheckCircle2, AlertTriangle, XCircle, HelpCircle, Info } from 'lucide-react';
-=======
 import { CheckCircle2, AlertTriangle, XCircle, HelpCircle, Info, AlertOctagon } from 'lucide-react';
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 import React from 'react';
 
 export interface VerdictConfig {
@@ -86,8 +82,6 @@ export const VERDICT_MAP: Record<VerdictType, VerdictConfig> = {
     annotationClass: '',
     description: 'Expresses a subjective value judgment or viewpoint not subject to empirical fact-checking.',
   },
-<<<<<<< HEAD
-=======
   VERIFICATION_UNAVAILABLE: {
     type: 'VERIFICATION_UNAVAILABLE',
     label: 'Verification Unavailable',
@@ -101,7 +95,6 @@ export const VERDICT_MAP: Record<VerdictType, VerdictConfig> = {
     annotationClass: 'mark-unverified',
     description: 'Verification could not be performed due to unavailable providers or retrieval failures.',
   },
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 };
 
 export function getVerdictConfig(verdict: string): VerdictConfig {

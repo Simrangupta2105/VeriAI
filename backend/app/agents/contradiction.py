@@ -154,10 +154,6 @@ class ContradictionDetector:
             # First, check if claimed_city IS confirmed as the capital in any retrieved snippet!
             claimed_city_confirmed = False
             for ev in evidence_list:
-<<<<<<< HEAD
-                ev_low = ev.snippet.lower()
-                if claimed_city in ev_low and (f"capital of {country}" in ev_low or f"capital and largest city of {country}" in ev_low or f"capital city of {country}" in ev_low):
-=======
                 ev_low = f"{ev.source_title}: {ev.snippet}".lower()
                 if "capital of the state of" in ev_low or "state capital" in ev_low or "provincial capital" in ev_low:
                     continue
@@ -167,32 +163,10 @@ class ContradictionDetector:
                     or f"capital city of {country}" in ev_low
                     or f"national capital of {country}" in ev_low
                 ):
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
                     claimed_city_confirmed = True
                     break
 
             if not claimed_city_confirmed:
-<<<<<<< HEAD
-                for ev in evidence_list:
-                    ev_low = ev.snippet.lower()
-                    # Pattern: "[ActualCity], the capital (city)? of [Country]" or "capital of [Country] is [ActualCity]"
-                    ev_cap = re.search(rf'([a-z\s]+?),\s+(?:the\s+)?capital(?:\s+city)?\s+of\s+{re.escape(country)}', ev_low)
-                    if not ev_cap:
-                        ev_cap = re.search(rf'capital(?:\s+city)?\s+of\s+{re.escape(country)}[^\.,;]*?(?:is|became)\s+([a-z\s]+)', ev_low)
-                    if ev_cap:
-                        raw_found = ev_cap.group(1).strip().split(',')[0].strip()
-                        # Ensure found city is a short valid name (<= 2 words) and not a clause
-                        if 1 <= len(raw_found.split()) <= 2 and not any(w in raw_found for w in ["since", "until", "when", "after", "its", "liberation"]):
-                            actual_city = raw_found
-                            if claimed_city not in actual_city and actual_city not in claimed_city:
-                                return {
-                                    "type": "FACTUAL_RELATION_CONTRADICTION",
-                                    "claimed_value": claimed_city.title(),
-                                    "found_value": actual_city.title(),
-                                    "evidence_ids": [ev.evidence_id],
-                                    "explanation": f"Claim asserts that {claimed_city.title()} is the capital of {country.title()}, but authoritative evidence ('{ev.source_title}') confirms that {actual_city.title()} is the official capital."
-                                }
-=======
                 # 1. Check if evidence explicitly identifies claimed city as state capital, not national capital
                 for ev in evidence_list:
                     ev_low = f"{ev.source_title}: {ev.snippet}".lower()
@@ -236,7 +210,6 @@ class ContradictionDetector:
                                         "evidence_ids": [ev.evidence_id],
                                         "explanation": f"Claim asserts that {claimed_city.title()} is the capital of {country.title()}, but authoritative evidence ('{ev.source_title}') confirms that {actual_city.title()} is the official capital."
                                     }
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
         # B. High office / title attribution (e.g. "Neil Armstrong was appointed Secretary General of the United Nations")
         if "secretary general" in low_claim or "president of" in low_claim or "prime minister of" in low_claim:

@@ -33,23 +33,16 @@ class EvidenceRetrievalAgent:
             raw_candidates.extend(entity_results)
 
         # Also query Wikipedia with alternative queries (contains relational or temporal context)
-<<<<<<< HEAD
-        for alt_q in (normalized.alternative_queries or [])[:2]:
-=======
         for alt_q in (normalized.alternative_queries or [])[:3]:
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
             alt_res = await self.wiki.search(alt_q, max_results=2)
             raw_candidates.extend(alt_res)
 
         # 2. Query DuckDuckGo Web Search
         ddg_results = await self.ddg.search(normalized.search_query, max_results=3)
         raw_candidates.extend(ddg_results)
-<<<<<<< HEAD
-=======
         if normalized.alternative_queries:
             ddg_alt = await self.ddg.search(normalized.alternative_queries[0], max_results=2)
             raw_candidates.extend(ddg_alt)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
         # 3. Deduplicate by URL
         seen_urls = set()

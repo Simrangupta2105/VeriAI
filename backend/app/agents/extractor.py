@@ -12,25 +12,6 @@ class ClaimExtractorAgent:
 
     async def extract_claims(self, text: str, question: Optional[str] = None) -> List[Claim]:
         """Extract atomic claims using LLM if available, otherwise syntactic decomposition."""
-<<<<<<< HEAD
-        # Try LLM extraction if API key is provided
-        gemini_key = settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY
-        if gemini_key:
-            try:
-                from google import genai
-                client = genai.Client(api_key=gemini_key)
-                prompt = self._build_extraction_prompt(text, question)
-                resp = client.models.generate_content(
-                    model="gemini-3.5-flash",
-                    contents=prompt
-                )
-                if resp and resp.text:
-                    claims = self._parse_llm_json(resp.text)
-                    if claims:
-                        return claims
-            except Exception:
-                pass
-=======
         gemini_key = settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY
         if gemini_key:
             try:
@@ -65,7 +46,6 @@ class ClaimExtractorAgent:
                     return claims
             except Exception as e:
                 print(f"[Extractor LLM error: {e}]")
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
         # Syntactic and Rule-Based Atomic Decomposition Engine
         return self._extract_claims_syntactic(text, question=question)

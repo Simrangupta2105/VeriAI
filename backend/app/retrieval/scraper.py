@@ -1,17 +1,11 @@
 import re
-<<<<<<< HEAD
-=======
 import logging
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 from typing import List, Optional
 import httpx
 from bs4 import BeautifulSoup
 
-<<<<<<< HEAD
-=======
 logger = logging.getLogger(__name__)
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 class PageScraper:
     """Fetches full page content and extracts high-relevance evidence chunks."""
 
@@ -45,12 +39,8 @@ class PageScraper:
                 paragraphs = [p.get_text(separator=" ", strip=True) for p in soup.find_all(["p", "article", "li"])]
                 clean_text = " ".join([p for p in paragraphs if len(p) > 30])
                 return clean_text[:12000] if clean_text else None
-<<<<<<< HEAD
-        except Exception:
-=======
         except Exception as exc:
             logger.exception("PageScraper failed to fetch '%s': %s", url, exc)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
             return None
 
     @staticmethod

@@ -9,8 +9,6 @@ class AdversarialCriticAgent:
         revised = False
         new_result = result.model_copy(deep=True)
 
-<<<<<<< HEAD
-=======
         # 0. Check for UNAVAILABLE or Missing / Error-Placeholder Evidence
         def is_placeholder_evidence(ev: EvidenceItem) -> bool:
             low_s = (ev.snippet or "").lower()
@@ -46,7 +44,6 @@ class AdversarialCriticAgent:
                 new_result.critic_notes = notes_str
                 return new_result, notes_str
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         # 1. Audit SUPPORTED claims against ContradictionDetector
         from backend.app.agents.contradiction import ContradictionDetector
         detector = ContradictionDetector()

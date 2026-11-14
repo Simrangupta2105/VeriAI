@@ -1,39 +1,23 @@
 import React from 'react';
-<<<<<<< HEAD
-import { useParams, Link } from 'react-router-dom';
-=======
 import { useParams, Link, useNavigate } from 'react-router-dom';
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 import { PageContainer } from '../components/layout/PageContainer';
 import { useAudit } from '../hooks/useVeriApi';
 import { ResultsDashboard } from '../components/checker/ResultsDashboard';
 import { Skeleton } from '../components/ui/Skeleton';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-<<<<<<< HEAD
-import { ArrowLeft, AlertCircle } from 'lucide-react';
-
-export const AuditDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-=======
 import { ArrowLeft, AlertCircle, PlusCircle } from 'lucide-react';
 
 export const AuditDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
   const { data: report, isLoading, isError } = useAudit(id);
 
   return (
     <PageContainer>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-<<<<<<< HEAD
-        {/* Back Link */}
-        <div className="mb-6">
-=======
         {/* Navigation Bar */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
           <Link
             to="/audits"
             className="inline-flex items-center gap-2 text-xs font-semibold text-muted-fg hover:text-foreground transition-colors"
@@ -41,15 +25,12 @@ export const AuditDetail: React.FC = () => {
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to Audit History
           </Link>
-<<<<<<< HEAD
-=======
 
           <Link to="/check">
             <Button variant="primary" size="sm" icon={<PlusCircle className="w-3.5 h-3.5" />}>
               Start New Audit
             </Button>
           </Link>
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         </div>
 
         {/* Loading */}
@@ -81,11 +62,7 @@ export const AuditDetail: React.FC = () => {
 
         {/* Success */}
         {!isLoading && !isError && report && (
-<<<<<<< HEAD
-          <ResultsDashboard report={report} />
-=======
           <ResultsDashboard report={report} onReset={() => navigate('/check')} />
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         )}
       </div>
     </PageContainer>

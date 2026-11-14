@@ -1,8 +1,4 @@
 import uuid
-<<<<<<< HEAD
-from datetime import datetime, timezone
-from typing import Optional, Callable, Dict, Any
-=======
 import asyncio
 import logging
 from datetime import datetime, timezone
@@ -10,7 +6,6 @@ from typing import Optional, Callable, Dict, Any, List
 from backend.app.config import settings
 
 logger = logging.getLogger(__name__)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 from backend.app.models.schemas import (
     VerificationReport,
     Claim,
@@ -28,10 +23,7 @@ from backend.app.agents.scorer import HallucinationScoringEngine
 from backend.app.services.report_generator import ReportGeneratorService
 from backend.app.database.repository import ReportRepository
 
-<<<<<<< HEAD
-=======
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 class PipelineOrchestrator:
     """Orchestrates the entire multi-agent hallucination detection and verification pipeline."""
 
@@ -81,14 +73,6 @@ class PipelineOrchestrator:
                 )
             ]
 
-<<<<<<< HEAD
-        # 3. Normalization, Retrieval & Verification per Claim
-        all_evidence: List[EvidenceItem] = []
-        all_results: List[VerificationResult] = []
-        ev_counter = 1
-
-        for idx, claim in enumerate(claims):
-=======
         # 3. Verification Strategy Selection
         has_llm_keys = bool(
             settings.GEMINI_API_KEY
@@ -105,35 +89,11 @@ class PipelineOrchestrator:
         all_results: List[VerificationResult] = []
 
         async def process_single_claim(claim: Claim, idx: int, ev_counter_start: int):
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
             if progress_cb:
                 progress_cb("PROCESSING_CLAIM", {
                     "index": idx + 1,
                     "total": len(claims),
                     "claim_id": claim.claim_id,
-<<<<<<< HEAD
-                    "claim_text": claim.claim
-                })
-
-            # Normalization
-            normalized = self.normalizer.normalize(claim)
-
-            # Retrieval
-            claim_evidences = await self.retriever.retrieve_for_claim(
-                claim, normalized, evidence_counter_start=ev_counter
-            )
-            ev_counter += len(claim_evidences)
-            all_evidence.extend(claim_evidences)
-
-            # Verification
-            verif_result = await self.verifier.verify(claim, claim_evidences)
-
-            # Critic Pass (Audit)
-            if enable_critic:
-                verif_result, _ = self.critic.critique(claim, verif_result, claim_evidences)
-
-            all_results.append(verif_result)
-=======
                     "claim_text": claim.claim,
                     "mode": "retrieval" if use_retrieval_mode else "dual-llm"
                 })
@@ -173,7 +133,6 @@ class PipelineOrchestrator:
         for verif_res, claim_evidences in results_and_evidences:
             all_results.append(verif_res)
             all_evidence.extend(claim_evidences)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
         # 4. Scoring Engine
         if progress_cb:
@@ -202,13 +161,8 @@ class PipelineOrchestrator:
         # 6. Save to Database
         try:
             ReportRepository.save_report(report)
-<<<<<<< HEAD
-        except Exception:
-            pass
-=======
         except Exception as exc:
             logger.exception("Failed to save report %s to database: %s", report_id, exc)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
         if progress_cb:
             progress_cb("COMPLETE", {"report_id": report_id})

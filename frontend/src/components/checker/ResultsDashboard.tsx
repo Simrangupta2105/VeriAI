@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
-=======
 import { useNavigate } from 'react-router-dom';
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 import { VerificationReport, VerdictType } from '../../types';
 import { Card } from '../ui/Card';
 import { Gauge } from '../ui/Gauge';
@@ -12,11 +9,7 @@ import { AnnotatedText, TextAnnotation } from '../ui/AnnotatedText';
 import { VERDICT_MAP } from '../../lib/verdict';
 import { useReportDownload } from '../../hooks/useVeriApi';
 import { Toast } from '../ui/Toast';
-<<<<<<< HEAD
-import { Copy, Download, ArrowUpDown, CheckCircle2, AlertTriangle, XCircle, HelpCircle } from 'lucide-react';
-=======
 import { Copy, Download, ArrowUpDown, CheckCircle2, AlertTriangle, XCircle, HelpCircle, PlusCircle } from 'lucide-react';
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
 interface ResultsDashboardProps {
   report: VerificationReport;
@@ -24,10 +17,7 @@ interface ResultsDashboardProps {
 }
 
 export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onReset }) => {
-<<<<<<< HEAD
-=======
   const navigate = useNavigate();
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
   const [selectedVerdict, setSelectedVerdict] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'id' | 'importance' | 'confidence'>('id');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -36,14 +26,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
 
   const { downloadJson, copyTextAudit } = useReportDownload();
 
-<<<<<<< HEAD
-=======
   const handleNewAudit = onReset || (() => {
     navigate('/check');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
   const handleCopyText = async () => {
     try {
       await copyTextAudit(report.report_id);
@@ -60,10 +47,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
     contradicted: 0,
     unverified: 0,
     not_factual: 0,
-<<<<<<< HEAD
-  };
-
-=======
     unavailable: 0,
   };
 
@@ -77,7 +60,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
       (r) => r.verdict === 'VERIFICATION_UNAVAILABLE' || r.critic_status === 'UNAVAILABLE'
     )?.reason || report.explanation || 'Verification infrastructure or evidence retrieval was unavailable.';
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
   const resultMap = new Map(report.results.map((r) => [r.claim_id, r]));
 
   // Build annotations for AnnotatedText proofread view
@@ -149,17 +131,9 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
             <Button variant="outline" size="sm" onClick={() => downloadJson(report)} icon={<Download className="w-3.5 h-3.5" />}>
               Export JSON
             </Button>
-<<<<<<< HEAD
-            {onReset && (
-              <Button variant="secondary" size="sm" onClick={onReset}>
-                New Audit
-              </Button>
-            )}
-=======
             <Button variant="secondary" size="sm" onClick={handleNewAudit} icon={<PlusCircle className="w-3.5 h-3.5" />}>
               New Audit
             </Button>
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
           </div>
         </div>
 
@@ -173,76 +147,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
         </div>
       </Card>
 
-<<<<<<< HEAD
-      {/* Semicircle Gauge & Verdict Totals Ledger */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left: Flat Semicircle Gauge */}
-        <Card className="lg:col-span-4 p-6 flex flex-col items-center justify-center text-center">
-          <Gauge value={report.overall_reliability} size={220} label="Evidence Corroboration Index" />
-          <p className="font-sans text-xs text-ink-muted max-w-xs mt-3 leading-relaxed">
-            Deterministic index derived from atomic proposition importance, retrieval confidence, and publisher provenance.
-          </p>
-        </Card>
-
-        {/* Right: Discrepancy Risk & Verdict Counts */}
-        <div className="lg:col-span-8 space-y-4">
-          <Card className="p-5 border-l-4 border-l-verdict-contra flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <span className="font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-                Estimated Discrepancy & Hallucination Risk
-              </span>
-              <div className="font-mono text-3xl font-bold text-ink mt-1">
-                {report.hallucination_risk}%
-              </div>
-              <p className="text-xs text-ink-muted mt-1 font-sans">
-                Penalizes explicit temporal mismatches, factual contradictions, and ghost citations.
-              </p>
-            </div>
-            <div className="font-mono text-xs px-2.5 py-1 rounded border border-rule bg-surface-subtle text-ink">
-              {report.hallucination_risk <= 15 ? 'Low Discrepancy' : report.hallucination_risk <= 30 ? 'Moderate Discrepancy' : 'High Discrepancy'}
-            </div>
-          </Card>
-
-          {/* 4 Verdict Tiles */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono">
-            <div className="p-3.5 rounded border border-verdict-supported/30 bg-verdict-supported-surface">
-              <div className="flex items-center gap-1.5 text-verdict-supported text-xs font-bold">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Supported</span>
-              </div>
-              <div className="text-2xl font-bold text-verdict-supported mt-1.5">
-                {counts.supported || 0}
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded border border-verdict-contra/30 bg-verdict-contra-surface">
-              <div className="flex items-center gap-1.5 text-verdict-contra text-xs font-bold">
-                <XCircle className="w-3.5 h-3.5" />
-                <span>Refuted</span>
-              </div>
-              <div className="text-2xl font-bold text-verdict-contra mt-1.5">
-                {counts.contradicted || 0}
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded border border-verdict-partial/30 bg-verdict-partial-surface">
-              <div className="flex items-center gap-1.5 text-verdict-partial text-xs font-bold">
-                <AlertTriangle className="w-3.5 h-3.5" />
-                <span>Partial</span>
-              </div>
-              <div className="text-2xl font-bold text-verdict-partial mt-1.5">
-                {counts.partially_supported || 0}
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded border border-verdict-unverified/30 bg-verdict-unverified-surface">
-              <div className="flex items-center gap-1.5 text-verdict-unverified text-xs font-bold">
-                <HelpCircle className="w-3.5 h-3.5" />
-                <span>Unverified</span>
-              </div>
-              <div className="text-2xl font-bold text-verdict-unverified mt-1.5">
-                {counts.unverified || 0}
-=======
       {/* Semicircle Gauge & Verdict Totals Ledger or Unavailable Banner */}
       {isAllUnavailable ? (
         <Card className="p-6 border-l-4 border-l-amber-500 bg-amber-500/5 space-y-3">
@@ -326,16 +230,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
                 <div className="text-2xl font-bold text-verdict-unverified mt-1.5">
                   {counts.unverified || 0}
                 </div>
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
               </div>
             </div>
           </div>
         </div>
-<<<<<<< HEAD
-      </div>
-=======
       )}
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
       {/* Signature Proofread Document Component */}
       <div className="space-y-3">
@@ -455,8 +354,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
         )}
       </div>
 
-<<<<<<< HEAD
-=======
       {/* Bottom Action Footer: Ready to audit another proposition */}
       <Card className="p-6 border border-rule bg-surface-subtle flex flex-wrap items-center justify-between gap-4 mt-8">
         <div>
@@ -480,7 +377,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ report, onRe
         </Button>
       </Card>
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
       <Toast
         isOpen={Boolean(toastMessage)}
         message={toastMessage || ''}

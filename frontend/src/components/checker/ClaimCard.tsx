@@ -58,8 +58,6 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({
         "{claim.claim}"
       </div>
 
-<<<<<<< HEAD
-=======
       {/* Verification Unavailable Warning Banner */}
       {verdict === 'VERIFICATION_UNAVAILABLE' && (
         <div className="p-3 mb-4 rounded border border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs font-mono flex items-center gap-2">
@@ -68,28 +66,19 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({
         </div>
       )}
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
       {/* Metrics Row: Confidence, Avg Source Quality, Critic Status */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3 rounded bg-surface-subtle border border-rule font-mono text-xs mb-4">
         <div>
           <span className="text-ink-muted block text-[10px] uppercase">Confidence</span>
           <span className="font-bold text-ink">
-<<<<<<< HEAD
-            {Math.round((result?.confidence || 0.5) * 100)}%
-=======
             {verdict === 'VERIFICATION_UNAVAILABLE' ? 'N/A' : `${Math.round((result?.confidence || 0.5) * 100)}%`}
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
           </span>
         </div>
 
         <div>
           <span className="text-ink-muted block text-[10px] uppercase">Source Provenance</span>
           <span className="font-bold text-ink">
-<<<<<<< HEAD
-            {Math.round(result?.source_quality_avg || 0)}/100
-=======
             {verdict === 'VERIFICATION_UNAVAILABLE' ? 'N/A' : `${Math.round(result?.source_quality_avg || 0)}/100`}
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
           </span>
         </div>
 
@@ -99,19 +88,12 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({
             className={`font-semibold inline-flex items-center gap-1 ${
               result?.critic_status === 'REVISED'
                 ? 'text-verdict-partial'
-<<<<<<< HEAD
-                : 'text-verdict-supported'
-            }`}
-          >
-            {result?.critic_status === 'REVISED' ? (
-=======
                 : result?.critic_status === 'FLAGGED' || result?.critic_status === 'UNAVAILABLE'
                 ? 'text-amber-500'
                 : 'text-verdict-supported'
             }`}
           >
             {result?.critic_status === 'REVISED' || result?.critic_status === 'FLAGGED' || result?.critic_status === 'UNAVAILABLE' ? (
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
               <ShieldAlert className="w-3 h-3" />
             ) : (
               <CheckCircle2 className="w-3 h-3" />

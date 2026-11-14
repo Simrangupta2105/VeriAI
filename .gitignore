@@ -23,7 +23,4 @@ venv/
 node_modules/
 dist/
 npm-debug.log*
-<<<<<<< HEAD
-=======
 *.log
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)

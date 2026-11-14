@@ -61,13 +61,9 @@ class ClaimNormalizerAgent:
     def _build_primary_query(self, text: str, entities: List[str]) -> str:
         # Strip years and common stops to form neutral factual verification query
         stops = {"the", "was", "were", "is", "are", "and", "or", "to", "in", "on", "at", "by", "for", "with", "from", "according"}
-<<<<<<< HEAD
-        words = [re.sub(r"[^\w]", "", w.lower()) for w in text.split()]
-=======
         # Normalize temperature symbols so 100°C becomes 100 °C rather than 100c
         normalized_text = re.sub(r"(\d+)\s*°\s*([cCfF])", r"\1 °\2", text)
         words = [re.sub(r"[^\w°]", "", w.lower()) for w in normalized_text.split()]
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         
         # Don't bias search with potentially hallucinated 4-digit years in neutral query
         substantive_words = [
@@ -79,28 +75,19 @@ class ClaimNormalizerAgent:
             primary_entity = entities[0]
             # Key verbs / nouns not part of entity
             extra_keywords = [w for w in substantive_words if w not in primary_entity.lower()]
-<<<<<<< HEAD
-            return f"{primary_entity} {' '.join(extra_keywords[:3])}".strip()
-
-        return " ".join(substantive_words[:5])
-=======
             return f"{primary_entity} {' '.join(extra_keywords[:5])}".strip()
 
         return " ".join(substantive_words[:6])
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
     def _build_alternative_queries(self, text: str, entities: List[str], temporal: str = None) -> List[str]:
         alts = []
         low = text.lower()
 
-<<<<<<< HEAD
-=======
         # Clean claim text as high-priority alternative query
         clean_claim = text.strip().rstrip(".")
         if clean_claim:
             alts.append(clean_claim)
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         # If claim asserts a relation like "capital of X", generate the neutral relation query
         if "capital" in low and entities:
             # Find the country/state entity

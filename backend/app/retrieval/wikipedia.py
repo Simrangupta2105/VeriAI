@@ -1,19 +1,13 @@
 import re
 import html
-<<<<<<< HEAD
-=======
 import logging
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 import urllib.parse
 from typing import List
 import httpx
 from backend.app.retrieval.base import BaseRetriever, RawSearchResult
 
-<<<<<<< HEAD
-=======
 logger = logging.getLogger(__name__)
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 class WikipediaRetriever(BaseRetriever):
     """Retrieves high-reliability encyclopedia reference evidence from Wikipedia API."""
 
@@ -53,13 +47,6 @@ class WikipediaRetriever(BaseRetriever):
                     # Fetch summary extract for page context
                     extract_text = await self._fetch_summary(client, title)
 
-<<<<<<< HEAD
-                    # Combine matched snippet and extract
-                    if clean_snippet and extract_text:
-                        combined_content = f"{clean_snippet}. {extract_text}"
-                    else:
-                        combined_content = clean_snippet or extract_text
-=======
                     # Ensure snippet explicitly identifies the subject title
                     if clean_snippet.lower().startswith(("the capital", "a capital", "the largest", "a city", "the city", "is the", "was the")):
                         article_snippet = f"{title} is {clean_snippet}"
@@ -73,7 +60,6 @@ class WikipediaRetriever(BaseRetriever):
                         combined_content = f"{article_snippet}. {extract_text}"
                     else:
                         combined_content = article_snippet or extract_text
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
 
                     url = f"https://en.wikipedia.org/wiki/{urllib.parse.quote(title.replace(' ', '_'))}"
                     results.append(
@@ -86,13 +72,8 @@ class WikipediaRetriever(BaseRetriever):
                             raw_content=combined_content
                         )
                     )
-<<<<<<< HEAD
-        except Exception:
-            pass
-=======
         except Exception as exc:
             logger.exception("Wikipedia search failed for query '%s': %s", query, exc)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         return results
 
     async def _fetch_summary(self, client: httpx.AsyncClient, title: str) -> str:
@@ -112,11 +93,6 @@ class WikipediaRetriever(BaseRetriever):
                     ext = pdata.get("extract", "")
                     if ext:
                         return ext
-<<<<<<< HEAD
-        except Exception:
-            pass
-=======
         except Exception as exc:
             logger.exception("Wikipedia summary fetch failed for title '%s': %s", title, exc)
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         return ""

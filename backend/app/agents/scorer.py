@@ -26,10 +26,7 @@ class HallucinationScoringEngine:
             "contradicted": 0,
             "unverified": 0,
             "not_factual": 0,
-<<<<<<< HEAD
-=======
             "unavailable": 0,
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         }
 
         claim_breakdowns = []
@@ -44,8 +41,6 @@ class HallucinationScoringEngine:
             importance = claim.importance
             sq = res.source_quality_avg
 
-<<<<<<< HEAD
-=======
             # Exclude unavailable claims from reliability and risk calculation
             if v == VerdictType.VERIFICATION_UNAVAILABLE or getattr(res, "verification_status", None) == "UNAVAILABLE":
                 counts["unavailable"] += 1
@@ -62,7 +57,6 @@ class HallucinationScoringEngine:
                 })
                 continue
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
             # Update counts
             if v == VerdictType.SUPPORTED:
                 counts["supported"] += 1
@@ -103,12 +97,9 @@ class HallucinationScoringEngine:
         if total_weight > 0:
             raw_reliability = (weighted_reliability_points / total_weight) * 100.0
             raw_risk = (weighted_risk_points / total_weight) * 100.0
-<<<<<<< HEAD
-=======
         elif counts["unavailable"] > 0:
             raw_reliability = 0.0
             raw_risk = 0.0
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         else:
             raw_reliability = 50.0
             raw_risk = 50.0
@@ -134,12 +125,9 @@ class HallucinationScoringEngine:
         return overall_reliability, hallucination_risk, breakdown, explanation
 
     def _build_explanation(self, reliability: float, risk: float, counts: Dict[str, int]) -> str:
-<<<<<<< HEAD
-=======
         if counts.get("unavailable", 0) == counts.get("total", 0) and counts.get("total", 0) > 0:
             return "Verification unavailable: Verification infrastructure or reference evidence was unavailable for all claims. Scores are not calculated."
 
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         parts = [
             f"Overall answer reliability is rated at {reliability}/100 with an estimated hallucination risk of {risk}%."
         ]
@@ -149,9 +137,6 @@ class HallucinationScoringEngine:
             parts.append(f"{counts['unverified']} claim(s) lacked corroborating independent evidence.")
         if counts["supported"] > 0:
             parts.append(f"{counts['supported']} claim(s) were successfully corroborated by authoritative references.")
-<<<<<<< HEAD
-=======
         if counts.get("unavailable", 0) > 0:
             parts.append(f"{counts['unavailable']} claim(s) could not be verified due to infrastructure or evidence unavailability and were excluded from scoring.")
->>>>>>> b002f1a (feat: complete multi-agent fact verification system with hybrid offline & dual-LLM consensus)
         return " ".join(parts)
