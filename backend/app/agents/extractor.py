@@ -15,7 +15,11 @@ class ClaimExtractorAgent:
         gemini_key = settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY
         if gemini_key:
             try:
-                import requests
+                try:
+                    import requests
+                except ImportError:
+                    requests = None
+                import httpx
                 import asyncio
                 prompt = self._build_extraction_prompt(text, question)
                 payload = {
@@ -29,7 +33,11 @@ class ClaimExtractorAgent:
                     for model in ["gemini-flash-lite-latest", "gemini-3.5-flash-lite"]:
                         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
                         try:
-                            resp = requests.post(url, json=payload, timeout=15)
+                            if requests is not None:
+                                resp = requests.post(url, json=payload, timeout=15)
+                            else:
+                                with httpx.Client(timeout=15.0) as client:
+                                    resp = client.post(url, json=payload)
                             if resp.status_code == 200:
                                 data = resp.json()
                                 candidates = data.get("candidates", [])

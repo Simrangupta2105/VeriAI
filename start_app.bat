@@ -1,7 +1,7 @@
 @echo off
 title VeriAI - Factual AI Claim Verification System
 echo ============================================================
-echo   Starting VeriAI Server & Dashboard...
+echo   Starting VeriAI Server and Dashboard...
 echo ============================================================
 cd /d "%~dp0"
 

@@ -3,13 +3,25 @@ import json
 import asyncio
 import time
 import logging
-import requests
+try:
+    import requests
+except ImportError:
+    requests = None
+import httpx
 from typing import List, Optional, Tuple, Dict, Any
 from backend.app.models.schemas import Claim, EvidenceItem, VerificationResult, VerdictType, ClaimType
 from backend.app.agents.contradiction import ContradictionDetector
 from backend.app.config import settings
 
 logger = logging.getLogger(__name__)
+
+
+def _http_post_json(url: str, json_data: dict, headers: Optional[dict] = None, timeout: float = 20.0):
+    """Executes a synchronous HTTP POST request using requests (if available) or httpx.Client."""
+    if requests is not None:
+        return requests.post(url, json=json_data, headers=headers, timeout=timeout)
+    with httpx.Client(timeout=timeout) as client:
+        return client.post(url, json=json_data, headers=headers)
 
 
 class ClaimVerifierAgent:
@@ -52,7 +64,7 @@ class ClaimVerifierAgent:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{target_model}:generateContent?key={key}"
             try:
                 t0 = time.time()
-                resp = requests.post(url, json=payload, timeout=20)
+                resp = _http_post_json(url, json_data=payload, timeout=20.0)
                 dur = round(time.time() - t0, 2)
                 if resp.status_code == 200:
                     data = resp.json()
@@ -93,7 +105,7 @@ class ClaimVerifierAgent:
         }
         try:
             t0 = time.time()
-            resp = requests.post(url, headers=headers, json=payload, timeout=20)
+            resp = _http_post_json(url, json_data=payload, headers=headers, timeout=20.0)
             dur = round(time.time() - t0, 2)
             if resp.status_code == 200:
                 data = resp.json()
@@ -122,7 +134,7 @@ class ClaimVerifierAgent:
         }
         try:
             t0 = time.time()
-            resp = requests.post(url, headers=headers, json=payload, timeout=20)
+            resp = _http_post_json(url, json_data=payload, headers=headers, timeout=20.0)
             dur = round(time.time() - t0, 2)
             if resp.status_code == 200:
                 data = resp.json()
